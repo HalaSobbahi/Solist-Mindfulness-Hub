@@ -75,12 +75,12 @@ header .close-icon {
 /* HERO SECTION */
 .hero {
   display: flex;
-  flex-direction: column; 
-  align-items: center;    
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   padding: 40px 15px;
   text-align: center;
-  gap: 20px; 
+  gap: 20px;
   transition: 1.15s ease;
 }
 
@@ -95,7 +95,7 @@ header .close-icon {
 .greetings {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   gap: 10px;
 }
 
@@ -153,14 +153,15 @@ header .close-icon {
     max-width: 80%;
   }
 }
+
 /* ---------- Desktop (default) ---------- */
-.owner-title{
+.owner-title {
   color: #9FB9CC;
   font-weight: bold;
   padding: 30px 0 0 60px;
 }
 
-.owner{
+.owner {
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: row;
@@ -168,19 +169,20 @@ header .close-icon {
   color: #363535;
 }
 
-.owner p{
+.owner p {
   max-width: 950px;
   line-height: 1.6;
   font-size: 15px;
   margin-left: 20px;
-    transition: 0.3s ease;
+  transition: 0.3s ease;
 
 }
 
-.owner p:hover{
+.owner p:hover {
   transform: scale(1.02);
 }
-.owner img{
+
+.owner img {
   width: 450px;
   height: auto;
   margin: 0 0 20px 20px;
@@ -188,33 +190,35 @@ header .close-icon {
   box-shadow: 0 4px 7px rgba(149, 190, 224, 0.5);
   transition: 0.3s ease;
 }
-.owner img:hover{
+
+.owner img:hover {
   transform: scale(1.05);
 }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 768px) {
 
-  .owner-title{
+  .owner-title {
     padding: 20px;
     text-align: center;
     font-size: 22px;
   }
 
-  .owner{
-    flex-direction: column;   /* stack vertically */
+  .owner {
+    flex-direction: column;
+    /* stack vertically */
     padding: 15px;
     align-items: center;
     text-align: center;
   }
 
-  .owner img{
+  .owner img {
     width: 90%;
     max-width: 320px;
     margin: 10px 0 15px 0;
   }
 
-  .owner p{
+  .owner p {
     margin-left: 0;
     max-width: 100%;
     font-size: 14px;
@@ -225,22 +229,80 @@ header .close-icon {
 /* ---------- Tablet ---------- */
 @media (min-width: 769px) and (max-width: 1024px) {
 
-  .owner-title{
+  .owner-title {
     padding: 25px 0 0 40px;
     font-size: 24px;
   }
 
-  .owner{
+  .owner {
     padding: 20px 30px;
     gap: 20px;
   }
 
-  .owner img{
+  .owner img {
     width: 350px;
   }
 
-  .owner p{
+  .owner p {
     max-width: 600px;
     font-size: 15px;
   }
+}
+
+
+.title {
+  color: #9FB9CC;
+  font-weight: bold;
+  padding: 50px 0 30px 0px;
+  text-align: center;
+}
+
+.categories {
+  padding: 10px 120px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 70px;
+  margin-bottom: 30px;
+
+}
+
+
+.category-box {
+  border: 2px solid #9FB9CC;
+
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  height: auto;
+  max-width: 300px;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 7px rgba(149, 190, 224, 0.6);
+
+}
+
+.category-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(149, 190, 224, 0.8);
+  background-color: #5e5858;
+}
+
+
+.category-box img {
+  height: auto;
+  margin-bottom: 5px;
+  border-radius: 10px;
+}
+
+.category-box h3 {
+  color: #9FB9CC;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+@media (max-width: 768px) {
+  .category-box {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
 }
