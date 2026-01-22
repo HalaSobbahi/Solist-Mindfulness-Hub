@@ -23,7 +23,7 @@
         <a href="#Categories">Categories</a>
         <a href="#SolistBookClub">Book Club</a>
         <a href="#Contact">Contact</a>
-        <button class="join-us">Join Us <i class="fa-solid fa-user"></i></button>
+        <button class="join-us"  id="joinBtn">Join Us <i class="fa-solid fa-user"></i></button>
 
     </header>
 
@@ -214,4 +214,14 @@
             behavior: "smooth"
         });
     });
+</script>
+
+<script>
+  // Select the button
+  const joinButton = document.getElementById("joinBtn");
+
+  // Add click event to redirect
+  joinButton.addEventListener("click", function() {
+    window.location.href = "Signup.html"; // change to Login.php if needed
+  });
 </script>
