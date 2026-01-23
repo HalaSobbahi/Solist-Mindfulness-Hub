@@ -54,11 +54,13 @@
 
     <div class="category-buttons">
         <button class="active" data-category="all">All</button>
-        <button data-category="clothes">Clothes</button>
         <button data-category="books">Books</button>
+                <button data-category="clothes">Clothes</button>
+
         <button data-category="gold">Gold</button>
         <button data-category="accessories">Accessories</button>
-        <button data-category="gadgets">Gadgets</button>
+        <button data-category="gadgets">SSS collection</button>
+        <button data-category="gadgets">Book Club</button>
     </div>
 
         <div class="product-controls">
@@ -233,9 +235,10 @@
                 <p class="footer-text">© 2026 Solist Mindfulness Hub. All rights reserved.</p>
                 <img src="img/visa-master.png" alt="Payment Methods" class="visa-master">
             </div>
-            <button id="scrollTopBtn" aria-label="Scroll to top">
+           <button id="scrollTopBtn" aria-label="Scroll to top">
                 <i class="fas fa-arrow-up"></i>
             </button>
+
 
     </footer>
 
@@ -282,5 +285,25 @@
     overlay.addEventListener('click', () => {
         sideMenu.classList.remove('active');
         overlay.classList.remove('active');
+    });
+</script>
+
+
+<script>
+    const scrollBtn = document.getElementById("scrollTopBtn");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+            scrollBtn.style.display = "flex";
+        } else {
+            scrollBtn.style.display = "none";
+        }
+    });
+
+    scrollBtn.addEventListener("click", () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     });
 </script>
