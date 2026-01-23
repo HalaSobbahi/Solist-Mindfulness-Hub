@@ -1,0 +1,227 @@
+<?php include 'config/db.php'; ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solist Mindfulness Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="">
+    <link rel="icon" href="img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+
+    <header id="Home">
+        <img src="img/logo.png" alt="" class="logo">
+
+        <a href="#Home">Home</a>
+        <a href="#Owner">Owner</a>
+        <a href="#Categories">Categories</a>
+        <a href="#SolistBookClub">Book Club</a>
+        <a href="#Contact">Contact</a>
+        <button class="join-us" id="joinBtn">Join Us <i class="fa-solid fa-user"></i></button>
+
+    </header>
+
+
+    <div class="hero">
+        <img src="img/icon.png" a class="solist-icon">
+        <h1>You have now entered the world of <span style="color:#8fabbe; font-weight: bold;">sun lovers</span></h1>
+        <img src="img/icon.png" a class="solist-icon">
+
+        <div class="greetings">
+            <h3>Greetings Dear Solist . . . </h3>
+            <h4>
+                You have now entered the world of sun lovers.
+                We are a community that draw their energy from the power and beauty of the sun.
+                We rise with the early hues of dawn to capture the positive energy that emanates from the first sunrise,
+                and
+                gratefully bid farewell to our day upon the sunset.
+
+            </h4>
+            <img src="img/lana-white-logo.png" alt="" class="lana-logo">
+
+        </div>
+    </div>
+    <h2 class="owner-title" id="Owner">Welcome to my world...</h2>
+
+    <div class="owner">
+        <p>
+            I am Lana Medawar.
+            I embarked on journalism when I was a young girl who dreamed of having her own tv shows.
+            I was born on the 8th of March, 1986, in a mountain city with stunning natural beauty called Jezzine.
+            I pursued my passion and studied radio and tv journalism at the Lebanese University.
+            Prior to my graduation in 2006, I landed my first job opportunity to work in a radio station.
+            I spent six years at the station working on broadcasting news and morning shows, while working at the same
+            time as a news correspondent for Arab news agencies.
+            <br><br>
+            2011 marked the second major career shift in my life: I joined Almayadeen news channel and worked as a major
+            news anchor and program presenter.
+            The third career milestone presented itself when I took on the challenging post of preparing and presenting
+            a daily one hour show, Almashadiyya”, which combined politics, economics, entertainment, society and
+            technology. I was also the show’s executive producer, which introduced me to whole new horizons of creative
+            production work.
+            <br><br>
+            2021 was a monumental year. I left the world of news and political programs and decided to shift to human
+            journalism!
+            I began to travel and shoot episodes of the new show, “Nothing is Impossible” whose main objective was to
+            inspire the audience to persist, hold firm to hope, and realize their dreams, through recounting the stories
+            of people who struggled and triumphed.
+            <br><br>
+            My social media presence started to take a more professional pattern in 2023, when I resolved to work on
+            producing a more weighty content based on books and knowledge.
+            <br><br>
+            That decision was one of the most pivotal career resolutions in my life that led me to found the
+            Storytelling School and the Solist Mindfulness Hub.
+            And the journey continues with your being part of it.
+            <br><br>
+            To all who know me and follow me, I send much love and gratitude; and to all who have joined recently,
+            welcome!
+        </p>
+        <img src="img/Lana.webp" alt="">
+    </div>
+
+
+    <h1 class="title" id="Categories">Categories</h1>
+
+    <div class="categories">
+
+        <div class="category-box">
+            <h3>Accessories</h3>
+            <img src="img/sunrise-small.webp" alt="">
+
+        </div>
+        <div class="category-box">
+            <h3>Clothes</h3>
+            <img src="img/solista-tshirt-white02-scaled.webp" alt="">
+
+        </div>
+        <div class="category-box">
+            <h3>Books</h3>
+            <img src="img/The-Solist-Box-for-Inspiration-July-04.webp" alt="">
+        </div>
+    </div>
+
+
+    <h1 class="title" id="SolistBookClub">Solist Bookclub </h1>
+    <div class="bookclub">
+        <img src="img/bookclub.png" alt="">
+        <div>
+            <p>
+                The Solist Readers’ Club selection for January 2026 is the novel “Rosa’s Diaries” by Reem Al Kamali.
+                <br><br>
+                This novel takes us to Dubai through the story of Rosa, a young girl who loves writing. Through her
+                journey, we discover the history of Dubai and the UAE, while exploring her psychological and family
+                challenges.
+                <br>
+                This month, we also read the book that created a major buzz in scientific circles: “You Are the Placebo”
+                by Joe Dispenza, in which Dispenza explores the power of the mind, energy, and emotions in healing
+                physical illnesses.
+            </p>
+            <h4>Inspiration Box Contents – January 2026</h4>
+            <ul>
+                <li>“Rosa’s Diaries” – Reem Al Kamali</li>
+                <li>“You Are the Placebo” – Joe Dispenza</li>
+                <li>Chamomile</li>
+                <li>Solist handmade soap</li>
+                <li>Solist bookmark</li>
+            </ul>
+
+
+            <button class="buy-now">Buy Now</button>
+        </div>
+    </div>
+
+    <footer id="Contact">
+
+        <div class="footer-content">
+
+
+            <div class="footer-logo">
+                <img src="img/logo.png" alt="Solist Logo">
+            </div>
+
+
+            <div class="footer-links">
+                <h5>Let Us Help You</h5>
+                <a href="#">About Us</a>
+                <a href="#">Your Orders</a>
+                <a href="#">Returns & Replacements</a>
+                <a href="#">Shipping Rates & Policies</a>
+                <a href="#">Terms and Conditions</a>
+            </div>
+
+
+            <div class="footer-links">
+                <h5>Connect With Us</h5>
+
+                <div class="social-media-icons">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+
+                <div class="support-box">
+                    <p class="support-title">Get support from Solist</p>
+
+                    <div class="support-item">
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:hello@solistmindfulness.com">hello@solistmindfulness.com</a>
+                    </div>
+
+                    <div class="support-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <a href="tel:+96171447314">+961 71 447 314</a>
+                    </div>
+
+                    <p class="support-note">We will gladly assist you in a short time.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="footer-text">© 2026 Solist Mindfulness Hub. All rights reserved.</p>
+                <img src="img/visa-master.png" alt="Payment Methods" class="visa-master">
+            </div>
+            <button id="scrollTopBtn" aria-label="Scroll to top">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+
+    </footer>
+
+</body>
+
+</html>
+
+<script>
+    const scrollBtn = document.getElementById("scrollTopBtn");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+            scrollBtn.style.display = "flex";
+        } else {
+            scrollBtn.style.display = "none";
+        }
+    });
+
+    scrollBtn.addEventListener("click", () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    });
+</script>
+
+<script>
+    const joinButton = document.getElementById("joinBtn");
+
+    joinButton.addEventListener("click", function () {
+        window.location.href = "Signup.php"; 
+    });
+</script>
