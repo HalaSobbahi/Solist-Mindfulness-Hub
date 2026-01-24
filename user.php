@@ -1,3 +1,24 @@
+<?php
+// Database connection
+$host = "localhost";
+$user = "root";
+$pass = "";
+$dbname = "solist";
+$conn = new mysqli($host, $user, $pass, $dbname);
+if ($conn->connect_error) die("Connection failed: " . $conn->connect_error)
+    ;
+
+// Fetch categories
+$cat_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
+
+// Fetch items
+$item_result = $conn->query("SELECT items.*, categories.slug AS category_slug 
+                             FROM items 
+                             JOIN categories ON items.category_id = categories.id");
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,6 +33,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
+<style>
+    .hidden {
+    display: none !important;
+}
+
+</style>
 
 <body>
 
@@ -54,136 +81,57 @@
 
 
 
-
-    <div class="category-buttons">
-        <button class="active" data-category="all">All</button>
-        <button data-category="books">Books</button>
-                <button data-category="clothes">Clothes</button>
-
-        <button data-category="gold">Gold</button>
-        <button data-category="accessories">Accessories</button>
-        <button data-category="gadgets">SSS collection</button>
-        <button data-category="gadgets">Book Club</button>
-    </div>
-
-        <div class="product-controls">
-
-  <!-- Search -->
-  <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search Products">
-
-  <!-- Sort -->
-  <select id="sortSelect" aria-label="Sort Products">
-    <option value="default">Sort by</option>
-    <option value="name-asc">Name A → Z</option>
-    <option value="name-desc">Name Z → A</option>
-    <option value="price-asc">Price Low → High</option>
-    <option value="price-desc">Price High → Low</option>
-  </select>
-
+<!-- Categories -->
+<div class="category-buttons">
+    <button class="active" data-category="all">All</button>
+    <?php while($cat = $cat_result->fetch_assoc()): ?>
+        <button data-category="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></button>
+    <?php endwhile; ?>
 </div>
 
-    <!-- Items -->
-    <div class="items-container">
+<!-- Product controls -->
+<div class="product-controls">
+    <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search Products">
+    <select id="sortSelect" aria-label="Sort Products">
+        <option value="default">Sort by</option>
+        <option value="name-asc">Name A → Z</option>
+        <option value="name-desc">Name Z → A</option>
+        <option value="price-asc">Price Low → High</option>
+        <option value="price-desc">Price High → Low</option>
+    </select>
+</div>
 
-        <div class="product-card" data-category="clothes">
+<!-- Items container -->
+<div class="items-container">
+    <?php while($item = $item_result->fetch_assoc()): ?>
+    <div class="product-card" data-category="<?php echo $item['category_slug']; ?>">
 
-            <img src="img/Accessories/Sunrise-Girl-Necklace01-1.jpg" alt="T-Shirt" class="product-img">
+        <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-img">
 
-            <!-- Wishlist -->
-            <div class="wishlist-btn"><i class="fa fa-heart"></i></div>
+        <!-- Wishlist -->
+        <div class="wishlist-btn"><i class="fa fa-heart"></i></div>
 
-            <!-- Hover content -->
-            <div class="product-overlay">
-                <h4>T-Shirt</h4>
-                <p class="price">$25</p>
+        <!-- Hover content -->
+        <div class="product-overlay">
+            <h4><?php echo $item['name']; ?></h4>
+            <p class="price">$<?php echo $item['price']; ?></p>
 
-                <div class="qty">
-                    <button class="minus">−</button>
-                    <span class="count">1</span>
-                    <button class="plus">+</button>
-                </div>
-
-                <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+            <div class="qty">
+                <button class="minus">−</button>
+                <span class="count">1</span>
+                <button class="plus">+</button>
             </div>
 
+            <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
         </div>
 
-
-
-
-        <div class="product-card" data-category="clothes">
-
-            <img src="img/Accessories/Sunset-Girl-Necklace01.webp" alt="T-Shirt" class="product-img">
-
-            <!-- Wishlist -->
-            <div class="wishlist-btn"><i class="fa fa-heart"></i></div>
-
-            <!-- Hover content -->
-            <div class="product-overlay">
-                <h4>T-Shirt</h4>
-                <p class="price">$25</p>
-
-                <div class="qty">
-                    <button class="minus">−</button>
-                    <span class="count">1</span>
-                    <button class="plus">+</button>
-                </div>
-
-                <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
-            </div>
-
-        </div>
-
-
-
-        <div class="product-card" data-category="clothes">
-
-            <img src="img/Accessories/Sunshine-Girl-Necklace01.webp" alt="T-Shirt" class="product-img">
-
-            <!-- Wishlist -->
-            <div class="wishlist-btn"><i class="fa fa-heart"></i></div>
-
-            <!-- Hover content -->
-            <div class="product-overlay">
-                <h4>T-Shirt</h4>
-                <p class="price">$25</p>
-
-                <div class="qty">
-                    <button class="minus">−</button>
-                    <span class="count">1</span>
-                    <button class="plus">+</button>
-                </div>
-
-                <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
-            </div>
-
-        </div>
-
-
-
-        <div class="product-card" data-category="clothes">
-
-            <img src="img/Accessories/Sunrise-Girl-Necklace01-1.jpg" alt="T-Shirt" class="product-img">
-
-            <!-- Wishlist -->
-            <div class="wishlist-btn"><i class="fa fa-heart"></i></div>
-
-            <!-- Hover content -->
-            <div class="product-overlay">
-                <h4>T-Shirt</h4>
-                <p class="price">$25</p>
-
-                <div class="qty">
-                    <button class="minus">−</button>
-                    <span class="count">1</span>
-                    <button class="plus">+</button>
-                </div>
-
-                <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
-            </div>
-
-        </div>
     </div>
+    <?php endwhile; ?>
+</div>
+
+
+
+
 
 
 
@@ -251,28 +199,6 @@
 
 
 
-<script>
-    const buttons = document.querySelectorAll('.category-buttons button');
-    const items = document.querySelectorAll('.items-container .item');
-
-    buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            buttons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const category = btn.getAttribute('data-category');
-
-            items.forEach(item => {
-                if (category === 'all' || item.getAttribute('data-category') === category) {
-                    item.classList.remove('hidden');
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
-        });
-    });
-</script>
-
 
 
 <script>
@@ -307,6 +233,35 @@
         window.scrollTo({
             top: 0,
             behavior: "smooth"
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+<script>
+    const buttons = document.querySelectorAll('.category-buttons button');
+    const items = document.querySelectorAll('.items-container .product-card'); // Corrected selector
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const category = btn.getAttribute('data-category');
+
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
         });
     });
 </script>
