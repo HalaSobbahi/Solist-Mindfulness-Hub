@@ -7,13 +7,41 @@ $dbname = "solist";
 $conn = new mysqli($host, $user, $pass, $dbname);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
+
+// Sorting logic
+$sort = $_GET['sort'] ?? 'default';
+
+$orderBy = "items.id DESC"; // default sorting (latest by id)
+
+switch ($sort) {
+    case 'price-asc':
+        $orderBy = "items.price ASC";
+        break;
+
+    case 'price-desc':
+        $orderBy = "items.price DESC";
+        break;
+
+    case 'latest':
+        $orderBy = "items.id DESC"; // latest added
+        break;
+
+    case 'oldest':
+        $orderBy = "items.id ASC";
+        break;
+}
+
 // Fetch categories
 $cat_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 
 // Fetch items
-$item_result = $conn->query("SELECT items.*, categories.slug AS category_slug 
-                             FROM items 
-                             JOIN categories ON items.category_id = categories.id");
+$item_result = $conn->query("
+    SELECT items.*, categories.slug AS category_slug 
+    FROM items 
+    JOIN categories ON items.category_id = categories.id
+    ORDER BY $orderBy
+");
+
 ?>
 
 
@@ -74,19 +102,23 @@ $item_result = $conn->query("SELECT items.*, categories.slug AS category_slug
 <!-- Product controls -->
 <div class="product-controls">
     <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search Products">
-    <select id="sortSelect" aria-label="Sort Products">
-        <option value="default">Sort by</option>
-        <option value="name-asc">Name A → Z</option>
-        <option value="name-desc">Name Z → A</option>
-        <option value="price-asc">Price Low → High</option>
-        <option value="price-desc">Price High → Low</option>
-    </select>
+ <select id="sortSelect">
+    <option value="default">Sort by</option>
+    <option value="latest">Latest Added</option>
+    <option value="oldest">Oldest</option>
+    <option value="price-asc">Price Low → High</option>
+    <option value="price-desc">Price High → Low</option>
+</select>
+
 </div>
 
 <!-- Items container -->
 <div class="items-container">
     <?php while($item = $item_result->fetch_assoc()): ?>
-    <div class="product-card" data-category="<?php echo $item['category_slug']; ?>">
+  <div class="product-card" 
+     data-id="<?php echo $item['id']; ?>" 
+     data-category="<?php echo $item['category_slug']; ?>">
+
 
         <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-img">
 
@@ -270,4 +302,40 @@ $item_result = $conn->query("SELECT items.*, categories.slug AS category_slug
 
         // Optional: highlight the matched text in category name or product name
     });
+</script>
+
+<script>
+const sortSelect = document.getElementById('sortSelect');
+const itemsContainer = document.querySelector('.items-container');
+
+sortSelect.addEventListener('change', function () {
+    const value = this.value;
+    let cards = Array.from(document.querySelectorAll('.product-card'));
+
+    // Only sort visible items (current category)
+    cards = cards.filter(card => !card.classList.contains('hidden'));
+
+    cards.sort((a, b) => {
+        const priceA = parseFloat(a.querySelector('.price').innerText.replace('$', ''));
+        const priceB = parseFloat(b.querySelector('.price').innerText.replace('$', ''));
+        const idA = parseInt(a.getAttribute('data-id'));
+        const idB = parseInt(b.getAttribute('data-id'));
+
+        switch(value){
+            case 'price-asc':
+                return priceA - priceB;
+            case 'price-desc':
+                return priceB - priceA;
+            case 'latest':
+                return idB - idA;
+            case 'oldest':
+                return idA - idB;
+            default:
+                return 0;
+        }
+    });
+
+    // Re-append sorted items
+    cards.forEach(card => itemsContainer.appendChild(card));
+});
 </script>
