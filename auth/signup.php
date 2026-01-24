@@ -9,13 +9,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pass  = $_POST['password'];
     $confirm = $_POST['confirm'];
 
-    // Basic validation
+
+$pass  = $_POST['password'];
+$confirm = $_POST['confirm'];
+
+if (strlen($pass) < 8) {
+    echo "Password must be at least 8 characters long";
+    exit;
+}
+
+if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $pass)) {
+    echo "Password must include at least one special character";
+    exit;
+}
+
+if ($pass !== $confirm) {
+    echo "Passwords do not match";
+    exit;
+}
+
+
+
     if ($pass !== $confirm) {
         echo "Passwords do not match";
         exit;
     }
 
-    // Check if email already exists
+   
     $check = $conn->prepare("SELECT id FROM users WHERE email=?");
     $check->bind_param("s", $email);
     $check->execute();
@@ -26,16 +46,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Generate verification token
+   
     $token = bin2hex(random_bytes(32));
 
-    // Try sending the email first
+  
     if (sendVerification($email, $token)) {
 
-        // Encrypt password
+       
         $hashed = password_hash($pass, PASSWORD_BCRYPT);
 
-        // Insert user into DB
+      
  $stmt = $conn->prepare("INSERT INTO users 
 (full_name, email, password, role, status, created_at, email_verified, verification_token)
 VALUES (?, ?, ?, ?, ?, NOW(), 0, ?)");

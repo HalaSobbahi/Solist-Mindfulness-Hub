@@ -2,14 +2,11 @@
 require "../config/db.php";
 
 if (!isset($_GET['token'])) {
-    die("No token provided.");
+    header("Location: ../login.php?error=invalid");
+    exit;
 }
 
-$token = trim($_GET['token']);
-$token = urldecode($token);   // ✅ FIX URL ENCODING
-
-// Debug (TEMP):
-// echo "TOKEN FROM URL: [$token]";
+$token = urldecode(trim($_GET['token']));
 
 $stmt = $conn->prepare("SELECT id FROM users WHERE verification_token = ?");
 $stmt->bind_param("s", $token);
@@ -24,8 +21,13 @@ if ($res->num_rows === 1) {
     $update->bind_param("s", $token);
     $update->execute();
 
-    echo "✅ Email verified successfully. You can login now.";
+  
+    header("Location: verified.html");
+    exit;
+
 } else {
-    echo "❌ Invalid or expired token.";
+    
+    header("Location: verified.html?status=invalid");
+    exit;
 }
 ?>

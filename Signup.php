@@ -54,6 +54,8 @@ document.getElementById("signupForm").addEventListener("submit", function(e){
     e.preventDefault();
 
     let form = new FormData(this);
+    let msg = document.getElementById("msg");
+    msg.innerHTML = "Processing, please wait...";
 
     fetch("auth/signup.php", {
         method: "POST",
@@ -62,11 +64,11 @@ document.getElementById("signupForm").addEventListener("submit", function(e){
     .then(res => res.text())
     .then(data => {
         if(data.trim() === "success"){
-            document.getElementById("msg").innerHTML = 
-            "Check your email to verify your account 📧";
+            msg.innerHTML = "Check your email to verify your account";
         }else{
-            document.getElementById("msg").innerHTML = data;
+            msg.innerHTML = data;
         }
     });
 });
+
 </script>
