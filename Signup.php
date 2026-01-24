@@ -16,7 +16,7 @@
     <div class="container">
         <div class="title">
             <img src="img/icon.png" alt="start icon" class="icon">
-            <a href="index.html" style="text-decoration: none;">
+            <a href="index.php" style="text-decoration: none;">
                 <h1 style="color:#9FB9CC;">Like the Sun that shines but doesn't burn</h1>
             </a>
             <img src="img/icon.png" alt="end icon" class="icon">
@@ -40,7 +40,7 @@
 
 
         <p style="margin-top: 10px; font-size: 14px;">
-            Already have an account? <a href="login.html">Login</a>
+            Already have an account? <a href="login.php">Login</a>
         </p>
     </div>
     </div>

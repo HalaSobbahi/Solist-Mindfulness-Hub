@@ -26,9 +26,12 @@
         <img src="img/logo.png" alt="" class="logo">
 
 
-        <div class="logout-box">
-            <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
-        </div>
+      <div class="logout-box">
+    <a href="logout.php">
+        <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
+    </a>
+</div>
+
     </header>
 
 
