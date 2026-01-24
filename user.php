@@ -88,6 +88,21 @@ $item_result = $conn->query("
 
     </header>
 
+<!-- SIDE MENU -->
+<div class="side-menu" id="sideMenu">
+    <div class="menu-logo">
+        <img src="img/logo.png" alt="Logo">
+    </div>
+
+    <a href="#"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
+    <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
+    <a href="#"><i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist</a>
+    <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
+    <a href="#"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
 
 
 
