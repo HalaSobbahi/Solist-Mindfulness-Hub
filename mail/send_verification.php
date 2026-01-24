@@ -29,15 +29,22 @@ function sendVerification($email, $token) {
         $link = "http://localhost/solist/auth/verify.php?token=$token";
 
         $mail->Body = "
-        <h2>Email Verification</h2>
-        <p>Click the link below to verify your account:</p>
-        <a href='$link'>Verify Email</a>
+        <div style='font-family: Arial, sans-serif; background-color: #363535; color: #fff; padding: 30px; text-align: center;'>
+            
+            <div style='background-color: #9FB9CC; padding: 40px; border-radius: 10px; color: #363535; display: inline-block;'>
+                <h2 style='margin-bottom: 20px;'>Email Verification</h2>
+                <p style='font-size: 16px; margin-bottom: 30px;'>Click the button below to verify your account:</p>
+                <a href='$link' style='display: inline-block; padding: 12px 25px; background-color: #363535; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;'>Verify Email</a>
+            </div>
+
+            <p style='margin-top: 30px; font-size: 12px; color: #ccc;'>If you did not request this email, please ignore it.</p>
+        </div>
         ";
 
         $mail->send();
-        return true;   // ✅ IMPORTANT
+        return true;
     } catch (Exception $e) {
-        return false;  // ✅ IMPORTANT
+        return false;
     }
 }
 
