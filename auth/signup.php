@@ -36,9 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashed = password_hash($pass, PASSWORD_BCRYPT);
 
         // Insert user into DB
-        $stmt = $conn->prepare("INSERT INTO users 
-            (full_name,email,password,role,status,created_at,email_verified,verification_token)
-            VALUES (?,?,?,?,NOW(),0,?)");
+ $stmt = $conn->prepare("INSERT INTO users 
+(full_name, email, password, role, status, created_at, email_verified, verification_token)
+VALUES (?, ?, ?, ?, ?, NOW(), 0, ?)");
+
+$stmt->bind_param("ssssss", $name, $email, $hashed, $role, $status, $token);
+
 
         $role = 'user';
         $status = 'active';

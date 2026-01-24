@@ -1,19 +1,22 @@
 <?php
+
+require __DIR__ . '/PHPMailer/src/Exception.php';
+require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require __DIR__ . '/PHPMailer/src/SMTP.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
-
 function sendVerification($email, $token) {
+
     $mail = new PHPMailer(true);
+
     try {
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'solist.hub@gmail.com';
-        $mail->Password   = 'YOUR_APP_PASSWORD';
+        $mail->Password   = 'lmawhwpeeswadkyr';
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
 
@@ -32,9 +35,9 @@ function sendVerification($email, $token) {
         ";
 
         $mail->send();
-        return true; // ✅ success
+        return true;   // ✅ IMPORTANT
     } catch (Exception $e) {
-        return false; // ❌ failed
+        return false;  // ✅ IMPORTANT
     }
 }
 
