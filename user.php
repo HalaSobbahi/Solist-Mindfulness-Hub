@@ -5,8 +5,7 @@ $user = "root";
 $pass = "";
 $dbname = "solist";
 $conn = new mysqli($host, $user, $pass, $dbname);
-if ($conn->connect_error) die("Connection failed: " . $conn->connect_error)
-    ;
+if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
 // Fetch categories
 $cat_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
@@ -61,23 +60,6 @@ $item_result = $conn->query("SELECT items.*, categories.slug AS category_slug
 
     </header>
 
-
-    <div class="side-menu" id="sideMenu">
-        <div class="menu-logo">
-            <img src="img/logo.png" alt="Logo">
-        </div>
-        <a href="#"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
-        <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
-        <a href="#"><i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist</a>
-        <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
-        <a href="#"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
-
-
-
-    </div>
-
-
-    <div class="overlay" id="overlay"></div>
 
 
 
@@ -263,5 +245,29 @@ $item_result = $conn->query("SELECT items.*, categories.slug AS category_slug
                 }
             });
         });
+    });
+</script>
+
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const productCards = document.querySelectorAll('.items-container .product-card');
+
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+
+        productCards.forEach(card => {
+            const category = card.getAttribute('data-category').toLowerCase();
+            const productName = card.querySelector('h4')?.textContent.toLowerCase() || '';
+
+            // Show card if query matches category or product name
+            if (category.includes(query) || productName.includes(query)) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+
+        // Optional: highlight the matched text in category name or product name
     });
 </script>
