@@ -148,7 +148,6 @@ $item_result = $conn->query("
 </div>
 
 
-<div class="overlay" id="overlay"></div>
 
 
 
@@ -429,19 +428,22 @@ document.querySelectorAll('.product-card').forEach(card => {
     const countSpan = card.querySelector('.count');
     const itemId = card.getAttribute('data-id');
 
+    function updateCartPanel(newQuantity) {
+        countSpan.innerText = newQuantity; // update product card
+        loadCart(); // update cart panel live
+    }
+
     // ADD TO CART
     addBtn.addEventListener('click', () => {
         fetch('cart_action.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                item_id: itemId,
-                action: 'add'
-            })
+            body: JSON.stringify({ item_id: itemId, action: 'add' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            updateCartPanel(data.new_quantity);
         });
-
-        let count = parseInt(countSpan.innerText);
-        countSpan.innerText = count + 1;
     });
 
     // PLUS
@@ -449,37 +451,29 @@ document.querySelectorAll('.product-card').forEach(card => {
         fetch('cart_action.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                item_id: itemId,
-                action: 'plus'
-            })
+            body: JSON.stringify({ item_id: itemId, action: 'plus' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            updateCartPanel(data.new_quantity);
         });
-
-        let count = parseInt(countSpan.innerText);
-        countSpan.innerText = count + 1;
     });
 
     // MINUS
     minusBtn.addEventListener('click', () => {
-        let count = parseInt(countSpan.innerText);
-
-        if(count <= 1){
-            countSpan.innerText = 0;
-        } else {
-            countSpan.innerText = count - 1;
-        }
-
         fetch('cart_action.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                item_id: itemId,
-                action: 'minus'
-            })
+            body: JSON.stringify({ item_id: itemId, action: 'minus' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            updateCartPanel(data.new_quantity);
         });
     });
 
 });
+
 </script>
 
 
@@ -488,7 +482,7 @@ document.querySelectorAll('.product-card').forEach(card => {
 
 
 <script>
-    // CART PANEL ELEMENTS
+ // CART PANEL ELEMENTS
 const cartPanel = document.getElementById('cartPanel');
 const cartLink = document.querySelector('a[href="#"]:has(.fa-shopping-cart)');
 const closeCart = document.getElementById('closeCart');
@@ -496,30 +490,21 @@ const cartItemsBox = document.getElementById('cartItems');
 const cartTotal = document.getElementById('cartTotal');
 const cartBadge = document.getElementById('cartBadge');
 
-
 // OPEN CART
 cartLink.addEventListener('click', e => {
     e.preventDefault();
     sideMenu.classList.remove('active');
 
-    // show overlay
-    overlay.classList.add('active');
-
-    setTimeout(() => {
-        cartPanel.classList.add('active');
-        loadCart();
-    }, 200);
+    // overlay removed
+    cartPanel.classList.add('active'); // show cart panel
+    loadCart(); // load items
 });
-
 
 // CLOSE CART
 closeCart.addEventListener('click', () => {
     cartPanel.classList.remove('active');
-
-    // hide overlay
-    overlay.classList.remove('active');
+    // overlay removed
 });
-
 
 // LOAD CART ITEMS
 function loadCart(){
@@ -553,7 +538,7 @@ function loadCart(){
     });
 }
 
-// EVENT DELEGATION FOR + / - BUTTONS
+
 // EVENT DELEGATION FOR + / - BUTTONS
 cartItemsBox.addEventListener('click', e => {
     const btn = e.target;
