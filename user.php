@@ -591,22 +591,16 @@ function cartAction(id, action){
     })
     .then(res => res.json())
     .then(data => {
-        // Update product card quantity
+        // 1. Update product card quantity
         updateProductCard(id, data.new_quantity);
 
-        // Update cart panel if item still exists
-        const cartItem = cartItemsBox.querySelector(`.cart-item[data-id='${id}']`);
-        if(cartItem){
-            const qtySpan = cartItem.querySelector('.qty');
-            qtySpan.innerText = data.new_quantity;
-        }
+        // 2. Refresh the cart panel live
+        loadCart(); // <-- THIS ensures the panel always reflects current cart
 
-        // Update cart total
-        cartTotal.innerText = data.total.toFixed(2);
-
-        return data; // allow chaining
+        return data; 
     });
 }
+
 
 function updateCartTotal(){
     let total = 0;
@@ -663,6 +657,49 @@ cartLink.addEventListener('click', e => {
     overlay.classList.add('active'); // show overlay
     cartPanel.classList.add('active'); // show cart panel
     loadCart(); // load cart items
+});
+
+</script>
+
+<script>
+    addBtn.addEventListener('click', () => {
+    fetch('cart_action.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ item_id: itemId, action: 'add' })
+    })
+    .then(res => res.json())
+    .then(data => {
+        countSpan.innerText = data.new_quantity;
+        loadCart(); // <-- live update cart panel
+    });
+});
+
+
+plusBtn.addEventListener('click', () => {
+    fetch('cart_action.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ item_id: itemId, action: 'plus' })
+    })
+    .then(res => res.json())
+    .then(data => {
+        countSpan.innerText = data.new_quantity;
+        loadCart(); // <-- live update cart panel
+    });
+});
+
+minusBtn.addEventListener('click', () => {
+    fetch('cart_action.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ item_id: itemId, action: 'minus' })
+    })
+    .then(res => res.json())
+    .then(data => {
+        countSpan.innerText = data.new_quantity;
+        loadCart(); // <-- live update cart panel
+    });
 });
 
 </script>
