@@ -10,6 +10,16 @@ if (!$user_id) {
     exit;
 }
 
+// Get cart items for this user
+$cart_result = $conn->query("SELECT item_id, quantity FROM cart WHERE user_id = $user_id");
+
+$cart_map = []; // item_id => quantity
+while ($row = $cart_result->fetch_assoc()) {
+    $cart_map[$row['item_id']] = $row['quantity'];
+}
+
+
+
 // Get all wishlist items for this user
 $wishlist_result = $conn->query("SELECT item_id FROM wishlist WHERE user_id = $user_id");
 $wishlist_ids = [];
@@ -66,6 +76,7 @@ $item_result = $conn->query("
     <title>Solist Mindfulness Hub</title>
     <link rel="stylesheet" href="css/user.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cart.css">
     <link rel="stylesheet" href="">
     <link rel="icon" href="img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -106,7 +117,27 @@ $item_result = $conn->query("
     </div>
 <a href="user.php"><i class="fa fa-home" style="margin-right: 15px;"></i>Home</a>
 
-    <a href="#"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
+<a href="#"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
+
+
+<div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+        <h3>Your Cart</h3>
+        <span id="closeCart">✕</span>
+    </div>
+
+    <div class="cart-items" id="cartItems">
+        <!-- dynamic -->
+    </div>
+
+    <div class="cart-footer">
+        <div class="cart-total">
+            Total: $<span id="cartTotal">0</span>
+        </div>
+        <button class="checkout-btn">Checkout</button>
+    </div>
+    
+</div>
     <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
    <a href="wishlist.php">
     <i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist
@@ -165,7 +196,10 @@ $item_result = $conn->query("
 
             <div class="qty">
                 <button class="minus">−</button>
-                <span class="count">1</span>
+<span class="count">
+    <?= isset($cart_map[$item['id']]) ? $cart_map[$item['id']] : 0 ?>
+</span>
+
                 <button class="plus">+</button>
             </div>
 
@@ -383,4 +417,252 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
         });
     });
 });
+</script>
+
+
+<script>
+document.querySelectorAll('.product-card').forEach(card => {
+
+    const addBtn = card.querySelector('.add-cart');
+    const plusBtn = card.querySelector('.plus');
+    const minusBtn = card.querySelector('.minus');
+    const countSpan = card.querySelector('.count');
+    const itemId = card.getAttribute('data-id');
+
+    // ADD TO CART
+    addBtn.addEventListener('click', () => {
+        fetch('cart_action.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                item_id: itemId,
+                action: 'add'
+            })
+        });
+
+        let count = parseInt(countSpan.innerText);
+        countSpan.innerText = count + 1;
+    });
+
+    // PLUS
+    plusBtn.addEventListener('click', () => {
+        fetch('cart_action.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                item_id: itemId,
+                action: 'plus'
+            })
+        });
+
+        let count = parseInt(countSpan.innerText);
+        countSpan.innerText = count + 1;
+    });
+
+    // MINUS
+    minusBtn.addEventListener('click', () => {
+        let count = parseInt(countSpan.innerText);
+
+        if(count <= 1){
+            countSpan.innerText = 0;
+        } else {
+            countSpan.innerText = count - 1;
+        }
+
+        fetch('cart_action.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                item_id: itemId,
+                action: 'minus'
+            })
+        });
+    });
+
+});
+</script>
+
+
+
+
+
+
+<script>
+    // CART PANEL ELEMENTS
+const cartPanel = document.getElementById('cartPanel');
+const cartLink = document.querySelector('a[href="#"]:has(.fa-shopping-cart)');
+const closeCart = document.getElementById('closeCart');
+const cartItemsBox = document.getElementById('cartItems');
+const cartTotal = document.getElementById('cartTotal');
+const cartBadge = document.getElementById('cartBadge');
+
+
+// OPEN CART
+cartLink.addEventListener('click', e => {
+    e.preventDefault();
+    sideMenu.classList.remove('active');
+
+    // show overlay
+    overlay.classList.add('active');
+
+    setTimeout(() => {
+        cartPanel.classList.add('active');
+        loadCart();
+    }, 200);
+});
+
+
+// CLOSE CART
+closeCart.addEventListener('click', () => {
+    cartPanel.classList.remove('active');
+
+    // hide overlay
+    overlay.classList.remove('active');
+});
+
+
+// LOAD CART ITEMS
+function loadCart(){
+    fetch('get_cart.php')
+    .then(res => res.json())
+    .then(data => {
+        cartItemsBox.innerHTML = '';
+        let count = 0;
+
+        data.items.forEach(item => {
+            count += item.quantity;
+
+            cartItemsBox.innerHTML += `
+                <div class="cart-item" data-id="${item.item_id}">
+                    <img src="${item.image}">
+                    <div class="cart-info">
+                        <h4>${item.name}</h4>
+                        <div class="price">$${item.price}</div>
+                        <div class="cart-qty">
+                            <button class="minus-btn">−</button>
+                            <span class="qty">${item.quantity}</span>
+                            <button class="plus-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        cartTotal.innerText = data.total.toFixed(2);
+        cartBadge.innerText = count;
+    });
+}
+
+// EVENT DELEGATION FOR + / - BUTTONS
+// EVENT DELEGATION FOR + / - BUTTONS
+cartItemsBox.addEventListener('click', e => {
+    const btn = e.target;
+    const cartItem = btn.closest('.cart-item');
+    if(!cartItem) return;
+
+    const id = cartItem.getAttribute('data-id');
+    const qtySpan = cartItem.querySelector('.qty');
+    let currentQty = parseInt(qtySpan.innerText);
+
+    if(btn.classList.contains('plus-btn')){
+        qtySpan.innerText = currentQty + 1;
+        cartAction(id, 'plus');
+    } 
+    else if(btn.classList.contains('minus-btn')){
+        if(currentQty > 1){
+            qtySpan.innerText = currentQty - 1;
+            cartAction(id, 'minus');
+        } else {
+            // Quantity will reach 0 → remove item from DOM
+            cartAction(id, 'minus').then(() => {
+                cartItem.remove(); // remove from panel
+                updateCartTotal(); // update total
+            });
+        }
+    }
+});
+
+
+function cartAction(id, action){
+    return fetch('cart_action.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({item_id: id, action: action})
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Update product card quantity
+        updateProductCard(id, data.new_quantity);
+
+        // Update cart panel if item still exists
+        const cartItem = cartItemsBox.querySelector(`.cart-item[data-id='${id}']`);
+        if(cartItem){
+            const qtySpan = cartItem.querySelector('.qty');
+            qtySpan.innerText = data.new_quantity;
+        }
+
+        // Update cart total
+        cartTotal.innerText = data.total.toFixed(2);
+
+        return data; // allow chaining
+    });
+}
+
+function updateCartTotal(){
+    let total = 0;
+    let count = 0;
+
+    cartItemsBox.querySelectorAll('.cart-item').forEach(item => {
+        const price = parseFloat(item.querySelector('.price').innerText.replace('$',''));
+        const qty = parseInt(item.querySelector('.qty').innerText);
+        total += price * qty;
+        count += qty;
+    });
+
+    cartTotal.innerText = total.toFixed(2);
+    if(cartBadge) cartBadge.innerText = count;
+}
+
+
+
+function updateProductCard(itemId, quantity){
+    const card = document.querySelector(`.product-card[data-id='${itemId}']`);
+    if(card){
+        const countSpan = card.querySelector('.count');
+        countSpan.innerText = quantity;
+    }
+}
+
+
+
+// CLEAR CART BUTTON
+const clearCartBtn = document.getElementById('clearCartBtn');
+if(clearCartBtn){
+    clearCartBtn.addEventListener('click', () => {
+        if(!confirm("Remove all items from cart?")) return;
+
+        fetch('clear_cart.php')
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'cleared'){
+                loadCart();
+                cartBadge.innerText = 0;
+            }
+        });
+    });
+}
+
+</script>
+
+<script>
+    // OPEN CART
+cartLink.addEventListener('click', e => {
+    e.preventDefault();
+    sideMenu.classList.remove('active');
+
+    overlay.classList.add('active'); // show overlay
+    cartPanel.classList.add('active'); // show cart panel
+    loadCart(); // load cart items
+});
+
 </script>

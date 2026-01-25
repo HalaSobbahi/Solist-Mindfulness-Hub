@@ -249,6 +249,8 @@ if (isset($_POST['change_password'])) {
     <a href="#"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
     <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
     <a href="wishlist.php"><i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist</a>
+    <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
+
     <a href="profile.php" class="active"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
 </div>
 
