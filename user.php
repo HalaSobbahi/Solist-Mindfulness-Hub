@@ -113,7 +113,7 @@ $item_result = $conn->query("
 </a>
 
     <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
-    <a href="#"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
+    <a href="profile.php"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
 </div>
 
 
