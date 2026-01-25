@@ -1,5 +1,4 @@
 <?php
-// Database connection
 $host = "localhost";
 $user = "root";
 $pass = "";
@@ -8,10 +7,10 @@ $conn = new mysqli($host, $user, $pass, $dbname);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
 
-// Sorting logic
+
 $sort = $_GET['sort'] ?? 'default';
 
-$orderBy = "items.id DESC"; // default sorting (latest by id)
+$orderBy = "items.id DESC"; 
 
 switch ($sort) {
     case 'price-asc':
@@ -23,7 +22,7 @@ switch ($sort) {
         break;
 
     case 'latest':
-        $orderBy = "items.id DESC"; // latest added
+        $orderBy = "items.id DESC"; 
         break;
 
     case 'oldest':
@@ -31,10 +30,10 @@ switch ($sort) {
         break;
 }
 
-// Fetch categories
+
 $cat_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 
-// Fetch items
+
 $item_result = $conn->query("
     SELECT items.*, categories.slug AS category_slug 
     FROM items 
@@ -43,7 +42,6 @@ $item_result = $conn->query("
 ");
 
 ?>
-
 
 
 <!DOCTYPE html>
@@ -88,25 +86,29 @@ $item_result = $conn->query("
 
     </header>
 
-<!-- SIDE MENU -->
+
 <div class="side-menu" id="sideMenu">
     <div class="menu-logo">
         <img src="img/logo.png" alt="Logo">
     </div>
+<a href="user.php"><i class="fa fa-home" style="margin-right: 15px;"></i>Home</a>
 
     <a href="#"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
     <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
-    <a href="#"><i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist</a>
+   <a href="wishlist.php">
+    <i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist
+</a>
+
     <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
     <a href="#"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
 </div>
 
-<!-- OVERLAY -->
+
 <div class="overlay" id="overlay"></div>
 
 
 
-<!-- Categories -->
+
 <div class="category-buttons">
     <button class="active" data-category="all">All</button>
     <?php while($cat = $cat_result->fetch_assoc()): ?>
@@ -114,12 +116,12 @@ $item_result = $conn->query("
     <?php endwhile; ?>
 </div>
 
-<!-- Product controls -->
+
 <div class="product-controls">
     <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search Products">
  <select id="sortSelect">
     <option value="default">Sort by</option>
-    <option value="latest">Latest Added</option>
+    <option value="latest">Latest </option>
     <option value="oldest">Oldest</option>
     <option value="price-asc">Price Low → High</option>
     <option value="price-desc">Price High → Low</option>
@@ -127,7 +129,7 @@ $item_result = $conn->query("
 
 </div>
 
-<!-- Items container -->
+
 <div class="items-container">
     <?php while($item = $item_result->fetch_assoc()): ?>
   <div class="product-card" 
@@ -137,10 +139,10 @@ $item_result = $conn->query("
 
         <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-img">
 
-        <!-- Wishlist -->
+    
         <div class="wishlist-btn"><i class="fa fa-heart"></i></div>
 
-        <!-- Hover content -->
+        
         <div class="product-overlay">
             <h4><?php echo $item['name']; ?></h4>
             <p class="price">$<?php echo $item['price']; ?></p>
@@ -157,11 +159,6 @@ $item_result = $conn->query("
     </div>
     <?php endwhile; ?>
 </div>
-
-
-
-
-
 
 
     <footer id="Contact">
@@ -267,12 +264,6 @@ $item_result = $conn->query("
 </script>
 
 
-
-
-
-
-
-
 <script>
     const buttons = document.querySelectorAll('.category-buttons button');
     const items = document.querySelectorAll('.items-container .product-card'); // Corrected selector
@@ -307,7 +298,7 @@ $item_result = $conn->query("
             const category = card.getAttribute('data-category').toLowerCase();
             const productName = card.querySelector('h4')?.textContent.toLowerCase() || '';
 
-            // Show card if query matches category or product name
+    
             if (category.includes(query) || productName.includes(query)) {
                 card.classList.remove('hidden');
             } else {
@@ -315,7 +306,6 @@ $item_result = $conn->query("
             }
         });
 
-        // Optional: highlight the matched text in category name or product name
     });
 </script>
 
@@ -327,7 +317,7 @@ sortSelect.addEventListener('change', function () {
     const value = this.value;
     let cards = Array.from(document.querySelectorAll('.product-card'));
 
-    // Only sort visible items (current category)
+
     cards = cards.filter(card => !card.classList.contains('hidden'));
 
     cards.sort((a, b) => {
@@ -350,7 +340,31 @@ sortSelect.addEventListener('change', function () {
         }
     });
 
-    // Re-append sorted items
+ 
     cards.forEach(card => itemsContainer.appendChild(card));
+});
+</script>
+<script>
+document.querySelectorAll('.wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+
+        const card = this.closest('.product-card');
+        const itemId = card.getAttribute('data-id');
+
+        this.classList.toggle('active');
+
+        fetch('wishlist_action.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ item_id: itemId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status !== 'saved' && data.status !== 'removed'){
+                alert('Wishlist error');
+            }
+        });
+    });
 });
 </script>

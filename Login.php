@@ -58,7 +58,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         <a href="index.html">
             <div class="title">
                 <img src="img/icon.png" alt="start icon" class="icon">
+             <a href="index.php" style="text-decoration: none;">
                 <h1 style="color:#9FB9CC;">Like the Sun that shines but doesn't burn</h1>
+            </a>
                 <img src="img/icon.png" alt="end icon" class="icon">
             </div>
         </a>
