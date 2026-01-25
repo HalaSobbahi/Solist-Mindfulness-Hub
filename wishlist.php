@@ -24,13 +24,15 @@ $result = $conn->query("
     <title>Your Wishlist | Solist</title>
     <link rel="stylesheet" href="css/user.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/wishlist.css">
     <link rel="icon" href="img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
 
-<header>
+
+    <header>
 
         <div class="menu-box" id="menuBtn">
             <i class="fa fa-bars menu-icon"></i>
@@ -46,6 +48,7 @@ $result = $conn->query("
 </div>
 
     </header>
+
 
 <div class="side-menu" id="sideMenu">
     <div class="menu-logo">
@@ -87,8 +90,7 @@ $result = $conn->query("
         <?php endwhile; ?>
     <?php else: ?>
 
-      <section class="wishlist-section">
-    <h2 class="section-title">Your Wishlist</h2>
+<section class="wishlist-section">
 
     <div class="items-container">
         <?php if($result->num_rows > 0): ?>
@@ -105,8 +107,8 @@ $result = $conn->query("
             <?php endwhile; ?>
         <?php else: ?>
             <div class="empty-state">
-                <i class="fa fa-heart-broken"></i>
-                <p>Your wishlist is empty</p>
+                <i class="fa fa-heart-broken empty-icon"></i>
+                <h3 class="empty-title">Your wishlist is empty</h3>
                 <a href="user.php" class="back-shop-btn">Start Shopping</a>
             </div>
         <?php endif; ?>
@@ -135,7 +137,22 @@ overlay.addEventListener('click', () => {
 });
 </script>
 
-<script>
+<script>function checkEmptyWishlist() {
+    const container = document.querySelector('.items-container');
+    // Only count actual product cards
+    const cards = container.querySelectorAll('.product-card');
+    if (cards.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fa fa-heart-broken empty-icon"></i>
+                <h3 class="empty-title">Your wishlist is empty</h3>
+                <a href="user.php" class="back-shop-btn">Start Shopping</a>
+            </div>
+        `;
+    }
+}
+
+// Attach click listeners to wishlist buttons dynamically
 document.querySelectorAll('.wishlist-btn').forEach(btn => {
     btn.addEventListener('click', function () {
         const card = this.closest('.product-card');
@@ -149,11 +166,15 @@ document.querySelectorAll('.wishlist-btn').forEach(btn => {
         .then(res => res.json())
         .then(data => {
             if(data.status === 'removed'){
-                card.remove();
+                // Animate removal if you want (optional)
+                card.remove();          // Remove card from DOM
+                checkEmptyWishlist();   // Inject empty state if no cards left
             }
         });
     });
 });
+
+
 </script>
 
 </body>

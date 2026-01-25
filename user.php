@@ -1,11 +1,21 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "solist";
-$conn = new mysqli($host, $user, $pass, $dbname);
+session_start();
+$conn = new mysqli("localhost", "root", "", "solist");
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
+// Get logged-in user ID
+$user_id = $_SESSION['user_id'] ?? null;
+if (!$user_id) {
+    header("Location: login.php");
+    exit;
+}
+
+// Get all wishlist items for this user
+$wishlist_result = $conn->query("SELECT item_id FROM wishlist WHERE user_id = $user_id");
+$wishlist_ids = [];
+while ($row = $wishlist_result->fetch_assoc()) {
+    $wishlist_ids[] = $row['item_id'];
+}
 
 
 $sort = $_GET['sort'] ?? 'default';
@@ -40,6 +50,9 @@ $item_result = $conn->query("
     JOIN categories ON items.category_id = categories.id
     ORDER BY $orderBy
 ");
+
+
+
 
 ?>
 
@@ -140,7 +153,10 @@ $item_result = $conn->query("
         <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-img">
 
     
-        <div class="wishlist-btn"><i class="fa fa-heart"></i></div>
+        <div class="wishlist-btn <?= in_array($item['id'], $wishlist_ids) ? 'active' : '' ?>">
+    <i class="fa fa-heart"></i>
+</div>
+
 
         
         <div class="product-overlay">
