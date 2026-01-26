@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <p style="margin-top: 10px; font-size: 14px;">
-            <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+            <a href="forgot-password.php" class="forgot-password">Forgot Password?</a>
         </p>
 
         <p style="margin-top: 5px; font-size: 14px;">
