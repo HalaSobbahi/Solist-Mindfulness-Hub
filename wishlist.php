@@ -135,6 +135,55 @@ $result = $conn->query("
 
     </section>
 
+ <footer>
+        <div class="footer-content">
+            <div class="footer-logo"><img src="img/logo.png" alt="Solist Logo"></div>
+            <div class="footer-links">
+                     <h5>My Account</h5>
+                <a href="cart.php">Cart</a>
+                <a href="">Orders</a>
+                <a href="wishlist.php">Wishlist</a>
+                <a href="#">Payment methods</a>
+                <a href="profile.php">Profile</a>
+            </div>
+            <div class="footer-links">
+                <h5>Connect With Us</h5>
+                <div class="social-media-icons">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <div class="support-box">
+                    <p class="support-title">Get support from Solist</p>
+                    <div class="support-item">
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:hello@solistmindfulness.com">hello@solistmindfulness.com</a>
+                    </div>
+                    <div class="support-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <a href="tel:+96171447314">+961 71 447 314</a>
+                    </div>
+                    <p class="support-note">We will gladly assist you in a short time.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-text">© 2026 Solist Mindfulness Hub. All rights reserved.</p>
+                <img src="img/visa-master.png" alt="Payment Methods" class="visa-master">
+            </div>
+            <button id="scrollTopBtn" aria-label="Scroll to top">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
+    </footer>
+
+
+
+
+
+
+
+
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const sideMenu = document.getElementById('sideMenu');

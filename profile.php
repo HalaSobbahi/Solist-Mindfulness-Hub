@@ -318,12 +318,12 @@ if (isset($_POST['change_password'])) {
         <div class="footer-content">
             <div class="footer-logo"><img src="img/logo.png" alt="Solist Logo"></div>
             <div class="footer-links">
-                <h5>My Account</h5>
-                <a href="#">Cart</a>
-                <a href="#">Orders</a>
-                <a href="#">Wishlist</a>
+                     <h5>My Account</h5>
+                <a href="cart.php">Cart</a>
+                <a href="">Orders</a>
+                <a href="wishlist.php">Wishlist</a>
                 <a href="#">Payment methods</a>
-                <a href="#">Profile</a>
+                <a href="profile.php">Profile</a>
             </div>
             <div class="footer-links">
                 <h5>Connect With Us</h5>

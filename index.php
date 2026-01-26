@@ -133,8 +133,8 @@
                 <li>Solist bookmark</li>
             </ul>
 
+            <a href="login.php"><button class="buy-now">Buy Now</button></a>
 
-            <button class="buy-now">Buy Now</button>
         </div>
     </div>
 

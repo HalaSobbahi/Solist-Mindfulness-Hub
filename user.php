@@ -219,11 +219,11 @@ $item_result = $conn->query("
 
             <div class="footer-links">
                 <h5>My Account</h5>
-                <a href="#">Cart</a>
-                <a href="#">Orders</a>
-                <a href="#">Wishlist</a>
+                <a href="cart.php">Cart</a>
+                <a href="">Orders</a>
+                <a href="wishlist.php">Wishlist</a>
                 <a href="#">Payment methods</a>
-                <a href="#">Profile</a>
+                <a href="profile.php">Profile</a>
             </div>
 
 
