@@ -1,10 +1,12 @@
 <?php
 session_start();
+require_once 'session_check.php';
+
 $conn = new mysqli("localhost", "root", "", "solist");
 if ($conn->connect_error) die("DB Error");
 
 $user_id = $_SESSION['user_id'] ?? null;
-if(!$user_id){
+if (!$user_id) {
     echo json_encode([]);
     exit;
 }
@@ -20,7 +22,7 @@ $q = $conn->query("
 $items = [];
 $total = 0;
 
-while($row = $q->fetch_assoc()){
+while ($row = $q->fetch_assoc()) {
     $row['subtotal'] = $row['price'] * $row['quantity'];
     $total += $row['subtotal'];
     $items[] = $row;

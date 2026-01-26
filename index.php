@@ -221,7 +221,7 @@
 <script>
     const joinButton = document.getElementById("joinBtn");
 
-    joinButton.addEventListener("click", function () {
-        window.location.href = "Signup.php"; 
+    joinButton.addEventListener("click", function() {
+        window.location.href = "Signup.php";
     });
 </script>

@@ -1,27 +1,27 @@
 <?php
 session_start();
-require __DIR__ . '/config/db.php'; // ✅ Fixed path
+require __DIR__ . '/config/db.php';
 
-// Redirect if already logged in
-if(isset($_SESSION['user_id'])){
+
+if (isset($_SESSION['user_id'])) {
     header("Location: user.php");
     exit;
 }
 
 $error = "";
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email_or_username = trim($_POST['email_or_username']);
     $password = trim($_POST['password']);
 
-    if($email_or_username && $password){
+    if ($email_or_username && $password) {
         $stmt = $conn->prepare("SELECT id, full_name, email, password FROM users WHERE email=? OR full_name=? LIMIT 1");
         $stmt->bind_param("ss", $email_or_username, $email_or_username);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if($result->num_rows === 1){
+        if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
-            if(password_verify($password, $user['password'])){
+            if (password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['full_name'];
                 header("Location: user.php");
@@ -58,9 +58,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         <a href="index.html">
             <div class="title">
                 <img src="img/icon.png" alt="start icon" class="icon">
-             <a href="index.php" style="text-decoration: none;">
-                <h1 style="color:#9FB9CC;">Like the Sun that shines but doesn't burn</h1>
-            </a>
+                <a href="index.php" style="text-decoration: none;">
+                    <h1 style="color:#9FB9CC;">Like the Sun that shines but doesn't burn</h1>
+                </a>
                 <img src="img/icon.png" alt="end icon" class="icon">
             </div>
         </a>
@@ -69,7 +69,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     <div class="login-container">
         <h2 style="color: #9FB9CC;">Login</h2>
 
-        <!-- Login Form -->
+
         <form method="POST" action="">
             <input type="text" name="email_or_username" placeholder="Username or Email" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -77,7 +77,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             <button type="submit">Login</button>
         </form>
 
-        <?php if($error): ?>
+        <?php if ($error): ?>
             <p style="color:#eee; margin-top: 10px;"><?php echo $error; ?></p>
         <?php endif; ?>
 
@@ -91,4 +91,5 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     </div>
 
 </body>
+
 </html>

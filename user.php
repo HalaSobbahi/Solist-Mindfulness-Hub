@@ -1,7 +1,16 @@
+
 <?php
+
+// Database Connection
 session_start();
+
+require_once 'session_check.php';
+
+
 $conn = new mysqli("localhost", "root", "", "solist");
-if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
+if ($conn->connect_error)
+    die("Connection failed: " . $conn->connect_error);
+
 
 // Get logged-in user ID
 $user_id = $_SESSION['user_id'] ?? null;
@@ -10,15 +19,22 @@ if (!$user_id) {
     exit;
 }
 
+
+
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
 // Get cart items for this user
 $cart_result = $conn->query("SELECT item_id, quantity FROM cart WHERE user_id = $user_id");
 
-$cart_map = []; // item_id => quantity
+$cart_map = [];
 while ($row = $cart_result->fetch_assoc()) {
     $cart_map[$row['item_id']] = $row['quantity'];
 }
-
-
 
 // Get all wishlist items for this user
 $wishlist_result = $conn->query("SELECT item_id FROM wishlist WHERE user_id = $user_id");
@@ -27,11 +43,9 @@ while ($row = $wishlist_result->fetch_assoc()) {
     $wishlist_ids[] = $row['item_id'];
 }
 
-
+// Sort items
 $sort = $_GET['sort'] ?? 'default';
-
-$orderBy = "items.id DESC"; 
-
+$orderBy = "items.id DESC";
 switch ($sort) {
     case 'price-asc':
         $orderBy = "items.price ASC";
@@ -42,7 +56,7 @@ switch ($sort) {
         break;
 
     case 'latest':
-        $orderBy = "items.id DESC"; 
+        $orderBy = "items.id DESC";
         break;
 
     case 'oldest':
@@ -50,22 +64,21 @@ switch ($sort) {
         break;
 }
 
-
+// Categories
 $cat_result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 
-
+// Items
 $item_result = $conn->query("
     SELECT items.*, categories.slug AS category_slug 
     FROM items 
     JOIN categories ON items.category_id = categories.id
     ORDER BY $orderBy
 ");
-
-
-
-
 ?>
 
+
+
+<!-- HTML -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -73,6 +86,7 @@ $item_result = $conn->query("
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Solist Mindfulness Hub</title>
     <link rel="stylesheet" href="css/user.css">
     <link rel="stylesheet" href="css/style.css">
@@ -84,131 +98,115 @@ $item_result = $conn->query("
 </head>
 <style>
     .hidden {
-    display: none !important;
-}
-
+        display: none !important;
+    }
 </style>
 
 <body>
-
-
-
+    <!-- Header -->
     <header>
-
         <div class="menu-box" id="menuBtn">
             <i class="fa fa-bars menu-icon"></i>
         </div>
-
         <img src="img/logo.png" alt="" class="logo">
-
-
-      <div class="logout-box">
-    <a href="logout.php">
-        <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
-    </a>
-</div>
-
+        <div class="logout-box">
+            <a href="logout.php">
+                <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
+            </a>
+        </div>
     </header>
 
-
-<div class="side-menu" id="sideMenu">
-    <div class="menu-logo">
-        <img src="img/logo.png" alt="Logo">
-    </div>
-<a href="user.php"><i class="fa fa-home" style="margin-right: 15px;"></i>Home</a>
-
-<a href="cart.php"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
-
-
-<div class="cart-panel" id="cartPanel">
-    <div class="cart-header">
-        <h3 style="color: 363535;">Your Cart</h3>
-    </div>
-
-    <div class="cart-items" id="cartItems">
-        <!-- dynamic -->
-    </div>
-
-    <div class="cart-footer">
-        <div class="cart-total">
-            Total: $<span id="cartTotal">0</span>
+    <!-- SideMenu -->
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-logo">
+            <img src="img/logo.png" alt="Logo">
         </div>
-        <button class="checkout-btn">Checkout</button>
-    </div>
-    
-</div>
-    <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
-   <a href="wishlist.php">
-    <i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist
-</a>
+        <a href="user.php"><i class="fa fa-home" style="margin-right: 15px;"></i>Home</a>
+        <a href="cart.php"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
+        <div class="cart-panel" id="cartPanel"></div>
+        <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
+        <a href="wishlist.php">
+            <i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist</a>
+        <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
+        <a href="profile.php"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
 
-    <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
-    <a href="profile.php"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
-</div>
+        <!-- Cart Header -->
+        <div class="cart-header">
+            <h3 style="color: 363535;">Your Cart</h3>
+        </div>
 
+        <div class="cart-items" id="cartItems"></div>
 
-
-
-
-
-<div class="category-buttons">
-    <button class="active" data-category="all">All</button>
-    <?php while($cat = $cat_result->fetch_assoc()): ?>
-        <button data-category="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></button>
-    <?php endwhile; ?>
-</div>
-
-
-<div class="product-controls">
-    <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search Products">
- <select id="sortSelect">
-    <option value="default">Sort by</option>
-    <option value="latest">Latest </option>
-    <option value="oldest">Oldest</option>
-    <option value="price-asc">Price Low → High</option>
-    <option value="price-desc">Price High → Low</option>
-</select>
-
-</div>
-
-
-<div class="items-container">
-    <?php while($item = $item_result->fetch_assoc()): ?>
-  <div class="product-card" 
-     data-id="<?php echo $item['id']; ?>" 
-     data-category="<?php echo $item['category_slug']; ?>">
-
-
-        <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-img">
-
-    
-        <div class="wishlist-btn <?= in_array($item['id'], $wishlist_ids) ? 'active' : '' ?>">
-    <i class="fa fa-heart"></i>
-</div>
-
-
-        
-        <div class="product-overlay">
-            <h4><?php echo $item['name']; ?></h4>
-            <p class="price">$<?php echo $item['price']; ?></p>
-
-            <div class="qty">
-                <button class="minus">−</button>
-<span class="count">
-    <?= isset($cart_map[$item['id']]) ? $cart_map[$item['id']] : 0 ?>
-</span>
-
-                <button class="plus">+</button>
+        <!-- Cart Footer -->
+        <div class="cart-footer">
+            <div class="cart-total">
+                Total: $<span id="cartTotal">0</span>
             </div>
-
-            <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+            <button class="checkout-btn">Checkout</button>
         </div>
 
     </div>
-    <?php endwhile; ?>
-</div>
 
 
+    <!-- Category Buttons -->
+
+    <div class="category-buttons">
+        <button class="active" data-category="all">All</button>
+        <?php while ($cat = $cat_result->fetch_assoc()): ?>
+            <button data-category="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></button>
+        <?php endwhile; ?>
+    </div>
+
+    <!-- Search & Sort -->
+
+    <div class="product-controls">
+        <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search Products">
+        <select id="sortSelect">
+            <option value="default">Sort by</option>
+            <option value="latest">Latest </option>
+            <option value="oldest">Oldest</option>
+            <option value="price-asc">Price Low → High</option>
+            <option value="price-desc">Price High → Low</option>
+        </select>
+
+    </div>
+
+    <!-- Items card -->
+
+    <div class="items-container">
+        <?php while ($item = $item_result->fetch_assoc()): ?>
+            <div class="product-card" data-id="<?php echo $item['id']; ?>"
+                data-category="<?php echo $item['category_slug']; ?>">
+
+
+                <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-img">
+
+
+                <div class="wishlist-btn <?= in_array($item['id'], $wishlist_ids) ? 'active' : '' ?>">
+                    <i class="fa fa-heart"></i>
+                </div>
+
+                <div class="product-overlay">
+                    <h4><?php echo $item['name']; ?></h4>
+                    <p class="price">$<?php echo $item['price']; ?></p>
+
+                    <div class="qty">
+                        <button class="minus">−</button>
+                        <span class="count">
+                            <?= isset($cart_map[$item['id']]) ? $cart_map[$item['id']] : 0 ?>
+                        </span>
+
+                        <button class="plus">+</button>
+                    </div>
+
+                    <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                </div>
+
+            </div>
+        <?php endwhile; ?>
+    </div>
+
+    <!-- Footer -->
     <footer id="Contact">
 
         <div class="footer-content">
@@ -260,33 +258,23 @@ $item_result = $conn->query("
                 <p class="footer-text">© 2026 Solist Mindfulness Hub. All rights reserved.</p>
                 <img src="img/visa-master.png" alt="Payment Methods" class="visa-master">
             </div>
-           <button id="scrollTopBtn" aria-label="Scroll to top">
+            <button id="scrollTopBtn" aria-label="Scroll to top">
                 <i class="fas fa-arrow-up"></i>
             </button>
-
-
     </footer>
 
 
+    <!-- JS -->
 
-<script src="js/menu.js"></script>
-<script src="js/scroll.js"></script>
-<script src="js/category.js"></script>
-<script src="js/search.js"></script>
-<script src="js/wishlist.js"></script>
-<script src="js/cart.js"></script>
-<script src="js/cart-panel.js"></script>
-<script src="js/sort.js"></script>
-
+    <script src="js/menu.js"></script>
+    <script src="js/scroll.js"></script>
+    <script src="js/category.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/wishlist.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/cart-panel.js"></script>
+    <script src="js/sort.js"></script>
 
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-

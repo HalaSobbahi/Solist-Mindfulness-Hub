@@ -1,5 +1,8 @@
 <?php
 session_start();
+
+require_once 'session_check.php';
+
 $conn = new mysqli("localhost", "root", "", "solist");
 if ($conn->connect_error) die("DB Error");
 

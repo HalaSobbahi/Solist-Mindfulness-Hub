@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+
+require_once 'session_check.php';
+
+
 $conn = new mysqli("localhost", "root", "", "solist");
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
@@ -30,7 +35,7 @@ while ($row = $wishlist_result->fetch_assoc()) {
 
 $sort = $_GET['sort'] ?? 'default';
 
-$orderBy = "items.id DESC"; 
+$orderBy = "items.id DESC";
 
 switch ($sort) {
     case 'price-asc':
@@ -42,7 +47,7 @@ switch ($sort) {
         break;
 
     case 'latest':
-        $orderBy = "items.id DESC"; 
+        $orderBy = "items.id DESC";
         break;
 
     case 'oldest':
@@ -60,8 +65,6 @@ $item_result = $conn->query("
     JOIN categories ON items.category_id = categories.id
     ORDER BY $orderBy
 ");
-
-
 
 
 ?>
@@ -84,14 +87,13 @@ $item_result = $conn->query("
 </head>
 <style>
     .hidden {
-    display: none !important;
-}
-
+        display: none !important;
+    }
 </style>
 
 <body>
 
-<div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-overlay" id="cartOverlay"></div>
 
 
     <header>
@@ -103,113 +105,113 @@ $item_result = $conn->query("
         <img src="img/logo.png" alt="" class="logo">
 
 
-      <div class="logout-box">
-    <a href="logout.php">
-        <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
-    </a>
-</div>
+        <div class="logout-box">
+            <a href="logout.php">
+                <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
+            </a>
+        </div>
 
     </header>
 
 
-<div class="side-menu" id="sideMenu">
-    <div class="menu-logo">
-        <img src="img/logo.png" alt="Logo">
-    </div>
-<a href="user.php"><i class="fa fa-home" style="margin-right: 15px;"></i>Home</a>
-
-<a href="cart.php"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
-
-
-<div class="cart-panel" id="cartPanel">
- <div class="cart-header">
-    <h3>Your Cart</h3>
-    <button class="cart-close" id="closeCart">✕</button>
-</div>
-
-
-    <div class="cart-items" id="cartItems">
-        <!-- dynamic -->
-    </div>
-
-    <div class="cart-footer">
-        <div class="cart-total">
-            Total: $<span id="cartTotal">0</span>
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-logo">
+            <img src="img/logo.png" alt="Logo">
         </div>
-        <button class="checkout-btn">Checkout</button>
-    </div>
-    
-</div>
-    <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
-   <a href="wishlist.php">
-    <i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist
-</a>
+        <a href="user.php"><i class="fa fa-home" style="margin-right: 15px;"></i>Home</a>
 
-    <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
-    <a href="profile.php"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
-</div>
+        <a href="cart.php"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
 
 
-
-
-
-
-<div class="category-buttons">
-    <button class="active" data-category="all">All</button>
-    <?php while($cat = $cat_result->fetch_assoc()): ?>
-        <button data-category="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></button>
-    <?php endwhile; ?>
-</div>
-
-
-<div class="product-controls">
-    <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search Products">
- <select id="sortSelect">
-    <option value="default">Sort by</option>
-    <option value="latest">Latest </option>
-    <option value="oldest">Oldest</option>
-    <option value="price-asc">Price Low → High</option>
-    <option value="price-desc">Price High → Low</option>
-</select>
-
-</div>
-
-
-<div class="items-container">
-    <?php while($item = $item_result->fetch_assoc()): ?>
-  <div class="product-card" 
-     data-id="<?php echo $item['id']; ?>" 
-     data-category="<?php echo $item['category_slug']; ?>">
-
-
-        <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-img">
-
-    
-        <div class="wishlist-btn <?= in_array($item['id'], $wishlist_ids) ? 'active' : '' ?>">
-    <i class="fa fa-heart"></i>
-</div>
-
-
-        
-        <div class="product-overlay">
-            <h4><?php echo $item['name']; ?></h4>
-            <p class="price">$<?php echo $item['price']; ?></p>
-
-            <div class="qty">
-                <button class="minus">−</button>
-<span class="count">
-    <?= isset($cart_map[$item['id']]) ? $cart_map[$item['id']] : 0 ?>
-</span>
-
-                <button class="plus">+</button>
+        <div class="cart-panel" id="cartPanel">
+            <div class="cart-header">
+                <h3>Your Cart</h3>
+                <button class="cart-close" id="closeCart">✕</button>
             </div>
 
-            <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+
+            <div class="cart-items" id="cartItems">
+                <!-- dynamic -->
+            </div>
+
+            <div class="cart-footer">
+                <div class="cart-total">
+                    Total: $<span id="cartTotal">0</span>
+                </div>
+                <button class="checkout-btn">Checkout</button>
+            </div>
+
         </div>
+        <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
+        <a href="wishlist.php">
+            <i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist
+        </a>
+
+        <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
+        <a href="profile.php"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
+    </div>
+
+
+
+
+
+
+    <div class="category-buttons">
+        <button class="active" data-category="all">All</button>
+        <?php while ($cat = $cat_result->fetch_assoc()): ?>
+            <button data-category="<?php echo $cat['slug']; ?>"><?php echo $cat['name']; ?></button>
+        <?php endwhile; ?>
+    </div>
+
+
+    <div class="product-controls">
+        <input type="text" id="searchInput" placeholder="Search products..." aria-label="Search Products">
+        <select id="sortSelect">
+            <option value="default">Sort by</option>
+            <option value="latest">Latest </option>
+            <option value="oldest">Oldest</option>
+            <option value="price-asc">Price Low → High</option>
+            <option value="price-desc">Price High → Low</option>
+        </select>
 
     </div>
-    <?php endwhile; ?>
-</div>
+
+
+    <div class="items-container">
+        <?php while ($item = $item_result->fetch_assoc()): ?>
+            <div class="product-card"
+                data-id="<?php echo $item['id']; ?>"
+                data-category="<?php echo $item['category_slug']; ?>">
+
+
+                <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" class="product-img">
+
+
+                <div class="wishlist-btn <?= in_array($item['id'], $wishlist_ids) ? 'active' : '' ?>">
+                    <i class="fa fa-heart"></i>
+                </div>
+
+
+
+                <div class="product-overlay">
+                    <h4><?php echo $item['name']; ?></h4>
+                    <p class="price">$<?php echo $item['price']; ?></p>
+
+                    <div class="qty">
+                        <button class="minus">−</button>
+                        <span class="count">
+                            <?= isset($cart_map[$item['id']]) ? $cart_map[$item['id']] : 0 ?>
+                        </span>
+
+                        <button class="plus">+</button>
+                    </div>
+
+                    <button class="add-cart"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                </div>
+
+            </div>
+        <?php endwhile; ?>
+    </div>
 
 
     <footer id="Contact">
@@ -263,7 +265,7 @@ $item_result = $conn->query("
                 <p class="footer-text">© 2026 Solist Mindfulness Hub. All rights reserved.</p>
                 <img src="img/visa-master.png" alt="Payment Methods" class="visa-master">
             </div>
-           <button id="scrollTopBtn" aria-label="Scroll to top">
+            <button id="scrollTopBtn" aria-label="Scroll to top">
                 <i class="fas fa-arrow-up"></i>
             </button>
 
@@ -349,7 +351,7 @@ $item_result = $conn->query("
             const category = card.getAttribute('data-category').toLowerCase();
             const productName = card.querySelector('h4')?.textContent.toLowerCase() || '';
 
-    
+
             if (category.includes(query) || productName.includes(query)) {
                 card.classList.remove('hidden');
             } else {
@@ -361,155 +363,171 @@ $item_result = $conn->query("
 </script>
 
 <script>
-const sortSelect = document.getElementById('sortSelect');
-const itemsContainer = document.querySelector('.items-container');
+    const sortSelect = document.getElementById('sortSelect');
+    const itemsContainer = document.querySelector('.items-container');
 
-sortSelect.addEventListener('change', function () {
-    const value = this.value;
-    let cards = Array.from(document.querySelectorAll('.product-card'));
+    sortSelect.addEventListener('change', function() {
+        const value = this.value;
+        let cards = Array.from(document.querySelectorAll('.product-card'));
 
 
-    cards = cards.filter(card => !card.classList.contains('hidden'));
+        cards = cards.filter(card => !card.classList.contains('hidden'));
 
-    cards.sort((a, b) => {
-        const priceA = parseFloat(a.querySelector('.price').innerText.replace('$', ''));
-        const priceB = parseFloat(b.querySelector('.price').innerText.replace('$', ''));
-        const idA = parseInt(a.getAttribute('data-id'));
-        const idB = parseInt(b.getAttribute('data-id'));
+        cards.sort((a, b) => {
+            const priceA = parseFloat(a.querySelector('.price').innerText.replace('$', ''));
+            const priceB = parseFloat(b.querySelector('.price').innerText.replace('$', ''));
+            const idA = parseInt(a.getAttribute('data-id'));
+            const idB = parseInt(b.getAttribute('data-id'));
 
-        switch(value){
-            case 'price-asc':
-                return priceA - priceB;
-            case 'price-desc':
-                return priceB - priceA;
-            case 'latest':
-                return idB - idA;
-            case 'oldest':
-                return idA - idB;
-            default:
-                return 0;
-        }
-    });
-
- 
-    cards.forEach(card => itemsContainer.appendChild(card));
-});
-</script>
-<script>
-document.querySelectorAll('.wishlist-btn').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-
-        const card = this.closest('.product-card');
-        const itemId = card.getAttribute('data-id');
-
-        this.classList.toggle('active');
-
-        fetch('wishlist_action.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ item_id: itemId })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status !== 'saved' && data.status !== 'removed'){
-                alert('Wishlist error');
+            switch (value) {
+                case 'price-asc':
+                    return priceA - priceB;
+                case 'price-desc':
+                    return priceB - priceA;
+                case 'latest':
+                    return idB - idA;
+                case 'oldest':
+                    return idA - idB;
+                default:
+                    return 0;
             }
         });
+
+
+        cards.forEach(card => itemsContainer.appendChild(card));
     });
-});
 </script>
-
-
 <script>
-document.querySelectorAll('.product-card').forEach(card => {
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
 
-    const addBtn = card.querySelector('.add-cart');
-    const plusBtn = card.querySelector('.plus');
-    const minusBtn = card.querySelector('.minus');
-    const countSpan = card.querySelector('.count');
-    const itemId = card.getAttribute('data-id');
+            const card = this.closest('.product-card');
+            const itemId = card.getAttribute('data-id');
 
-    function updateCartPanel(newQuantity) {
-        countSpan.innerText = newQuantity; // update product card
-        loadCart(); // update cart panel live
-    }
+            this.classList.toggle('active');
 
-    // ADD TO CART
-    addBtn.addEventListener('click', () => {
-        fetch('cart_action.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ item_id: itemId, action: 'add' })
-        })
-        .then(res => res.json())
-        .then(data => {
-            updateCartPanel(data.new_quantity);
+            fetch('wishlist_action.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status !== 'saved' && data.status !== 'removed') {
+                        alert('Wishlist error');
+                    }
+                });
         });
     });
+</script>
 
-    // PLUS
-    plusBtn.addEventListener('click', () => {
-        fetch('cart_action.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ item_id: itemId, action: 'plus' })
-        })
-        .then(res => res.json())
-        .then(data => {
-            updateCartPanel(data.new_quantity);
+
+<script>
+    document.querySelectorAll('.product-card').forEach(card => {
+
+        const addBtn = card.querySelector('.add-cart');
+        const plusBtn = card.querySelector('.plus');
+        const minusBtn = card.querySelector('.minus');
+        const countSpan = card.querySelector('.count');
+        const itemId = card.getAttribute('data-id');
+
+        function updateCartPanel(newQuantity) {
+            countSpan.innerText = newQuantity; // update product card
+            loadCart(); // update cart panel live
+        }
+
+        // ADD TO CART
+        addBtn.addEventListener('click', () => {
+            fetch('cart_action.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId,
+                        action: 'add'
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    updateCartPanel(data.new_quantity);
+                });
         });
-    });
 
-    // MINUS
-    minusBtn.addEventListener('click', () => {
-        fetch('cart_action.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ item_id: itemId, action: 'minus' })
-        })
-        .then(res => res.json())
-        .then(data => {
-            updateCartPanel(data.new_quantity);
+        // PLUS
+        plusBtn.addEventListener('click', () => {
+            fetch('cart_action.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId,
+                        action: 'plus'
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    updateCartPanel(data.new_quantity);
+                });
         });
+
+        // MINUS
+        minusBtn.addEventListener('click', () => {
+            fetch('cart_action.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId,
+                        action: 'minus'
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    updateCartPanel(data.new_quantity);
+                });
+        });
+
     });
-
-});
-
 </script>
 
 
 
 <script>
-const cartItemsBox = document.getElementById('cartItems');
-const cartTotal = document.getElementById('cartTotal');
-const cartBadge = document.getElementById('cartBadge'); // optional if exists
+    const cartItemsBox = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartBadge = document.getElementById('cartBadge'); // optional if exists
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    if(window.location.pathname.includes('cart.php')){
-        openCart();
-        loadCart();   
-    }
-});
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.location.pathname.includes('cart.php')) {
+            openCart();
+            loadCart();
+        }
+    });
 </script>
 
 
 <script>
+    function loadCart() {
+        fetch('get_cart.php')
+            .then(res => res.json())
+            .then(data => {
+                cartItemsBox.innerHTML = '';
+                let count = 0;
 
+                data.items.forEach(item => {
+                    count += item.quantity;
 
-function loadCart(){
-    fetch('get_cart.php')
-    .then(res => res.json())
-    .then(data => {
-        cartItemsBox.innerHTML = '';
-        let count = 0;
-
-        data.items.forEach(item => {
-            count += item.quantity;
-
-            cartItemsBox.innerHTML += `
+                    cartItemsBox.innerHTML += `
                 <div class="cart-item" data-id="${item.item_id}">
                     <img src="${item.image}">
                     <div class="cart-info">
@@ -523,184 +541,201 @@ function loadCart(){
                     </div>
                 </div>
             `;
+                });
+
+                cartTotal.innerText = data.total.toFixed(2);
+                cartBadge.innerText = count;
+            });
+    }
+
+
+    // EVENT DELEGATION FOR + / - BUTTONS
+    cartItemsBox.addEventListener('click', e => {
+        const btn = e.target;
+        const cartItem = btn.closest('.cart-item');
+        if (!cartItem) return;
+
+        const id = cartItem.getAttribute('data-id');
+        const qtySpan = cartItem.querySelector('.qty');
+        let currentQty = parseInt(qtySpan.innerText);
+
+        if (btn.classList.contains('plus-btn')) {
+            qtySpan.innerText = currentQty + 1;
+            cartAction(id, 'plus');
+        } else if (btn.classList.contains('minus-btn')) {
+            if (currentQty > 1) {
+                qtySpan.innerText = currentQty - 1;
+                cartAction(id, 'minus');
+            } else {
+                // Quantity will reach 0 → remove item from DOM
+                cartAction(id, 'minus').then(() => {
+                    cartItem.remove(); // remove from panel
+                    updateCartTotal(); // update total
+                });
+            }
+        }
+    });
+
+
+    function cartAction(id, action) {
+        return fetch('cart_action.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    item_id: id,
+                    action: action
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // 1. Update product card quantity
+                updateProductCard(id, data.new_quantity);
+
+                // 2. Refresh the cart panel live
+                loadCart(); // <-- THIS ensures the panel always reflects current cart
+
+                return data;
+            });
+    }
+
+
+    function updateCartTotal() {
+        let total = 0;
+        let count = 0;
+
+        cartItemsBox.querySelectorAll('.cart-item').forEach(item => {
+            const price = parseFloat(item.querySelector('.price').innerText.replace('$', ''));
+            const qty = parseInt(item.querySelector('.qty').innerText);
+            total += price * qty;
+            count += qty;
         });
 
-        cartTotal.innerText = data.total.toFixed(2);
-        cartBadge.innerText = count;
-    });
-}
+        cartTotal.innerText = total.toFixed(2);
+        if (cartBadge) cartBadge.innerText = count;
+    }
 
 
-// EVENT DELEGATION FOR + / - BUTTONS
-cartItemsBox.addEventListener('click', e => {
-    const btn = e.target;
-    const cartItem = btn.closest('.cart-item');
-    if(!cartItem) return;
 
-    const id = cartItem.getAttribute('data-id');
-    const qtySpan = cartItem.querySelector('.qty');
-    let currentQty = parseInt(qtySpan.innerText);
-
-    if(btn.classList.contains('plus-btn')){
-        qtySpan.innerText = currentQty + 1;
-        cartAction(id, 'plus');
-    } 
-    else if(btn.classList.contains('minus-btn')){
-        if(currentQty > 1){
-            qtySpan.innerText = currentQty - 1;
-            cartAction(id, 'minus');
-        } else {
-            // Quantity will reach 0 → remove item from DOM
-            cartAction(id, 'minus').then(() => {
-                cartItem.remove(); // remove from panel
-                updateCartTotal(); // update total
-            });
+    function updateProductCard(itemId, quantity) {
+        const card = document.querySelector(`.product-card[data-id='${itemId}']`);
+        if (card) {
+            const countSpan = card.querySelector('.count');
+            countSpan.innerText = quantity;
         }
     }
-});
-
-
-function cartAction(id, action){
-    return fetch('cart_action.php', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({item_id: id, action: action})
-    })
-    .then(res => res.json())
-    .then(data => {
-        // 1. Update product card quantity
-        updateProductCard(id, data.new_quantity);
-
-        // 2. Refresh the cart panel live
-        loadCart(); // <-- THIS ensures the panel always reflects current cart
-
-        return data; 
-    });
-}
-
-
-function updateCartTotal(){
-    let total = 0;
-    let count = 0;
-
-    cartItemsBox.querySelectorAll('.cart-item').forEach(item => {
-        const price = parseFloat(item.querySelector('.price').innerText.replace('$',''));
-        const qty = parseInt(item.querySelector('.qty').innerText);
-        total += price * qty;
-        count += qty;
-    });
-
-    cartTotal.innerText = total.toFixed(2);
-    if(cartBadge) cartBadge.innerText = count;
-}
 
 
 
-function updateProductCard(itemId, quantity){
-    const card = document.querySelector(`.product-card[data-id='${itemId}']`);
-    if(card){
-        const countSpan = card.querySelector('.count');
-        countSpan.innerText = quantity;
-    }
-}
+    // CLEAR CART BUTTON
+    const clearCartBtn = document.getElementById('clearCartBtn');
+    if (clearCartBtn) {
+        clearCartBtn.addEventListener('click', () => {
+            if (!confirm("Remove all items from cart?")) return;
 
-
-
-// CLEAR CART BUTTON
-const clearCartBtn = document.getElementById('clearCartBtn');
-if(clearCartBtn){
-    clearCartBtn.addEventListener('click', () => {
-        if(!confirm("Remove all items from cart?")) return;
-
-        fetch('clear_cart.php')
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === 'cleared'){
-                loadCart();
-                cartBadge.innerText = 0;
-            }
+            fetch('clear_cart.php')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'cleared') {
+                        loadCart();
+                        cartBadge.innerText = 0;
+                    }
+                });
         });
-    });
-}
-
+    }
 </script>
 
 
 <script>
     addBtn.addEventListener('click', () => {
-    fetch('cart_action.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ item_id: itemId, action: 'add' })
-    })
-    .then(res => res.json())
-    .then(data => {
-        countSpan.innerText = data.new_quantity;
-        loadCart(); // <-- live update cart panel
+        fetch('cart_action.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    item_id: itemId,
+                    action: 'add'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                countSpan.innerText = data.new_quantity;
+                loadCart(); // <-- live update cart panel
+            });
     });
-});
 
 
-plusBtn.addEventListener('click', () => {
-    fetch('cart_action.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ item_id: itemId, action: 'plus' })
-    })
-    .then(res => res.json())
-    .then(data => {
-        countSpan.innerText = data.new_quantity;
-        loadCart(); // <-- live update cart panel
+    plusBtn.addEventListener('click', () => {
+        fetch('cart_action.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    item_id: itemId,
+                    action: 'plus'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                countSpan.innerText = data.new_quantity;
+                loadCart(); // <-- live update cart panel
+            });
     });
-});
 
-minusBtn.addEventListener('click', () => {
-    fetch('cart_action.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ item_id: itemId, action: 'minus' })
-    })
-    .then(res => res.json())
-    .then(data => {
-        countSpan.innerText = data.new_quantity;
-        loadCart(); // <-- live update cart panel
+    minusBtn.addEventListener('click', () => {
+        fetch('cart_action.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    item_id: itemId,
+                    action: 'minus'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                countSpan.innerText = data.new_quantity;
+                loadCart(); // <-- live update cart panel
+            });
     });
-});
-
 </script>
 
 
 <script>
-const cartPanel = document.getElementById('cartPanel');
-const cartOverlay = document.getElementById('cartOverlay');
-const closeCart = document.getElementById('closeCart');
+    const cartPanel = document.getElementById('cartPanel');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const closeCart = document.getElementById('closeCart');
 
-/* OPEN CART */
-function openCart(){
-    cartPanel.classList.add('active');
-    cartOverlay.classList.add('active');
-    document.body.classList.add('cart-open');
-}
+    /* OPEN CART */
+    function openCart() {
+        cartPanel.classList.add('active');
+        cartOverlay.classList.add('active');
+        document.body.classList.add('cart-open');
+    }
 
-/* CLOSE CART */
-function closeCartFn(){
-    cartPanel.classList.remove('active');
-    cartOverlay.classList.remove('active');
-    document.body.classList.remove('cart-open');
+    /* CLOSE CART */
+    function closeCartFn() {
+        cartPanel.classList.remove('active');
+        cartOverlay.classList.remove('active');
+        document.body.classList.remove('cart-open');
 
-    // redirect after close
-    window.location.href = "user.php";
-}
+        // redirect after close
+        window.location.href = "user.php";
+    }
 
-/* Events */
-if(closeCart){
-    closeCart.addEventListener('click', closeCartFn);
-}
+    /* Events */
+    if (closeCart) {
+        closeCart.addEventListener('click', closeCartFn);
+    }
 
-cartOverlay.addEventListener('click', closeCartFn);
+    cartOverlay.addEventListener('click', closeCartFn);
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    openCart();
-});
+    document.addEventListener('DOMContentLoaded', () => {
+        openCart();
+    });
 </script>
