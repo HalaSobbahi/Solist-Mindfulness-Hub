@@ -127,22 +127,7 @@
 
 
 
-/* Black overlay */
-.cart-overlay{
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 9998;
-    display:none;
-}
 
-/* Active overlay */
-.cart-overlay.active{
-    display:block;
-}
 
 /* Cart panel */
 .cart-panel{
@@ -171,7 +156,3 @@
     cursor:pointer;
 }
 
-/* Disable body scroll */
-body.cart-open{
-    overflow: hidden;
-}
