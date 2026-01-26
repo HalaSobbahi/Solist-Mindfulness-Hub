@@ -91,6 +91,7 @@ $item_result = $conn->query("
 
 <body>
 
+<div class="cart-overlay" id="cartOverlay"></div>
 
 
     <header>
@@ -121,9 +122,11 @@ $item_result = $conn->query("
 
 
 <div class="cart-panel" id="cartPanel">
-    <div class="cart-header">
-        <h3 style="color: 363535;">Your Cart</h3>
-    </div>
+ <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" id="closeCart">✕</button>
+</div>
+
 
     <div class="cart-items" id="cartItems">
         <!-- dynamic -->
@@ -477,27 +480,23 @@ document.querySelectorAll('.product-card').forEach(card => {
 
 
 
+<script>
+const cartItemsBox = document.getElementById('cartItems');
+const cartTotal = document.getElementById('cartTotal');
+const cartBadge = document.getElementById('cartBadge'); // optional if exists
+</script>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if(window.location.pathname.includes('cart.php')){
+        openCart();
+        loadCart();   // 🔥 THIS WAS MISSING
+    }
+});
+</script>
 
 
 <script>
- // CART PANEL ELEMENTS
-const cartPanel = document.getElementById('cartPanel');
-const cartLink = document.querySelector('a[href="#"]:has(.fa-shopping-cart)');
-const closeCart = document.getElementById('closeCart');
-const cartItemsBox = document.getElementById('cartItems');
-const cartTotal = document.getElementById('cartTotal');
-const cartBadge = document.getElementById('cartBadge');
-
-// OPEN CART
-cartLink.addEventListener('click', e => {
-    e.preventDefault();
-    sideMenu.classList.remove('active');
-
-    // overlay removed
-    cartPanel.classList.add('active'); // show cart panel
-    loadCart(); // load items
-});
 
 
 // LOAD CART ITEMS
@@ -627,18 +626,6 @@ if(clearCartBtn){
 
 </script>
 
-<script>
-    // OPEN CART
-cartLink.addEventListener('click', e => {
-    e.preventDefault();
-    sideMenu.classList.remove('active');
-
-    overlay.classList.add('active'); // show overlay
-    cartPanel.classList.add('active'); // show cart panel
-    loadCart(); // load cart items
-});
-
-</script>
 
 <script>
     addBtn.addEventListener('click', () => {
@@ -685,37 +672,36 @@ minusBtn.addEventListener('click', () => {
 
 
 <script>
-    document.addEventListener('click', (e) => {
-    // If the cart is open
-    if(cartPanel.classList.contains('active')){
-        // If the click is NOT inside the cart or the cart icon
-        if(!cartPanel.contains(e.target) && !cartLink.contains(e.target)){
-            cartPanel.classList.remove('active'); // hide cart
-            overlay.classList.remove('active');   // hide overlay if used
-        }
-    }
-});
+const cartPanel = document.getElementById('cartPanel');
+const cartOverlay = document.getElementById('cartOverlay');
+const closeCart = document.getElementById('closeCart');
 
+/* OPEN CART */
+function openCart(){
+    cartPanel.classList.add('active');
+    cartOverlay.classList.add('active');
+    document.body.classList.add('cart-open');
+}
+
+/* CLOSE CART */
+function closeCartFn(){
+    cartPanel.classList.remove('active');
+    cartOverlay.classList.remove('active');
+    document.body.classList.remove('cart-open');
+
+    // redirect after close
+    window.location.href = "user.php";
+}
+
+/* Events */
+if(closeCart){
+    closeCart.addEventListener('click', closeCartFn);
+}
+
+cartOverlay.addEventListener('click', closeCartFn);
 </script>
-
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    if (urlParams.get("openCart") === "1") {
-        // simulate cart button click or open cart function
-        if (typeof openCart === "function") {
-            openCart(); // if you already have a function
-        } else {
-            // manual open (adjust IDs/classes if needed)
-            const cartPanel = document.getElementById("cartPanel");
-            const overlay = document.getElementById("overlay");
-
-            if (cartPanel) cartPanel.classList.add("active");
-            if (overlay) overlay.classList.add("active");
-
-            document.body.classList.add("no-scroll"); // prevent scroll
-        }
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    openCart();
 });
 </script>
