@@ -490,7 +490,7 @@ const cartBadge = document.getElementById('cartBadge'); // optional if exists
 document.addEventListener('DOMContentLoaded', () => {
     if(window.location.pathname.includes('cart.php')){
         openCart();
-        loadCart();   // 🔥 THIS WAS MISSING
+        loadCart();   
     }
 });
 </script>
@@ -499,7 +499,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 
 
-// LOAD CART ITEMS
 function loadCart(){
     fetch('get_cart.php')
     .then(res => res.json())
