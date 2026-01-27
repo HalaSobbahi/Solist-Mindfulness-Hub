@@ -175,7 +175,11 @@ $item_result = $conn->query("
 
     <div class="items-container">
         <?php while ($item = $item_result->fetch_assoc()): ?>
-            <div class="product-card" data-id="<?php echo $item['id']; ?>"
+            <a href="item.php?id=<?php echo $item['id']; ?>" class="product-link">
+    <div class="product-card" data-id="<?php echo $item['id']; ?>"
+
+
+    div class="product-card" data-id="<?php echo $item['id']; ?>"
                 data-category="<?php echo $item['category_slug']; ?>">
 
 
