@@ -62,6 +62,35 @@ if (empty($images)) {
 }
 
 $main_image = $images[0]; // default main image
+
+$CLOTHES_ID = 2; // clothes category id
+
+
+$sizes = [];
+$colors = [];
+
+if ((int)$item['category_id'] === $CLOTHES_ID) {
+
+    // Sizes
+    $size_stmt = $conn->prepare("SELECT size FROM item_sizes WHERE item_id = ?");
+    $size_stmt->bind_param("i", $item_id);
+    $size_stmt->execute();
+    $size_res = $size_stmt->get_result();
+    while ($row = $size_res->fetch_assoc()) {
+        $sizes[] = $row['size'];
+    }
+
+    // Colors
+    $color_stmt = $conn->prepare("SELECT color, color_code FROM item_colors WHERE item_id = ?");
+    $color_stmt->bind_param("i", $item_id);
+    $color_stmt->execute();
+    $color_res = $color_stmt->get_result();
+    while ($row = $color_res->fetch_assoc()) {
+        $colors[] = $row;
+    }
+}
+
+
 // Fetch average rating and total votes
 $stmt = $conn->prepare("SELECT AVG(rating) AS avg_rating, COUNT(*) AS total_votes FROM item_ratings WHERE item_id = ?");
 $stmt->bind_param("i", $item_id);
@@ -94,7 +123,7 @@ if ($user_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Solist Mindfulness Hub</title>
     <link rel="stylesheet" href="css/user.css">
     <link rel="stylesheet" href="css/style.css">
@@ -125,7 +154,7 @@ if ($user_id) {
         </div>
     </header>
 
-        <!-- SideMenu -->
+    <!-- SideMenu -->
     <div class="side-menu" id="sideMenu">
         <div class="menu-logo">
             <img src="img/logo.png" alt="Logo">
@@ -155,62 +184,110 @@ if ($user_id) {
         </div>
 
     </div>
-    
-<div class="item-page">
-    <div class="item-container">
 
-<div class="item-image-gallery">
-    <!-- Vertical Thumbnails -->
-    <div class="thumbnails-slider">
-        <?php foreach ($images as $img): ?>
-            <img src="<?php echo $img; ?>" class="thumbnail <?php echo $img === $main_image ? 'active' : ''; ?>" alt="Thumbnail">
-        <?php endforeach; ?>
-    </div>
+    <div class="item-page">
+        <div class="item-container">
 
-    <!-- Main Image with zoom/pan -->
-    <div class="main-image-zoom">
-        <img src="<?php echo $main_image; ?>" id="mainItemImage" alt="Main Image">
-    </div>
-</div>
+            <div class="item-image-gallery">
+                <!-- Vertical Thumbnails -->
+                <div class="thumbnails-slider">
+                    <?php foreach ($images as $img): ?>
+                        <img src="<?php echo $img; ?>" class="thumbnail <?php echo $img === $main_image ? 'active' : ''; ?>" alt="Thumbnail">
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Main Image with zoom/pan -->
+                <div class="main-image-zoom">
+                    <img src="<?php echo $main_image; ?>" id="mainItemImage" alt="Main Image">
+                </div>
+            </div>
 
 
 
-        <!-- Right: Details -->
-        <div class="item-details">
-            <h1 class="item-name"><?php echo htmlspecialchars($item['name']); ?></h1>
-            <div class="item-price">$<?php echo number_format($item['price'], 2); ?></div>
-            <div class="item-stock">
-                <?php if ($item['stock'] > 0): ?>
-                    <span class="in-stock">In Stock</span>
-                <?php else: ?>
-                    <span class="out-stock">Out of Stock</span>
+            <!-- Right: Details -->
+            <div class="item-details">
+                <h1 class="item-name"><?php echo htmlspecialchars($item['name']); ?></h1>
+                <div class="item-price">$<?php echo number_format($item['price'], 2); ?></div>
+                <div class="item-stock">
+                    <?php if ($item['is_in_stock'] == 1): ?>
+                        <span class="in-stock">
+                            <i class="fa-solid fa-circle-check"></i> In Stock
+                        </span>
+                    <?php else: ?>
+                        <span class="out-stock">
+                            <i class="fa-solid fa-circle-xmark"></i> Out of Stock
+                        </span>
+                    <?php endif; ?>
+                </div>
+
+                <div class="item-rating">
+                    <div id="starRating" class="stars" data-user-rating="<?php echo $user_rating; ?>" data-avg-rating="<?php echo $avg_rating; ?>">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <i class="fa fa-star" data-value="<?php echo $i; ?>"></i>
+                        <?php endfor; ?>
+                        <span id="ratingInfo">(<?php echo $avg_rating; ?> / 5, <?php echo $total_votes; ?> votes)</span>
+                    </div>
+                </div>
+
+                <div class="item-description">
+                    <h3>Details</h3>
+                    <p><?php echo nl2br(htmlspecialchars($item['description'])); ?></p>
+                </div>
+
+
+                <?php if ((int)$item['category_id'] === $CLOTHES_ID): ?>
+
+                    <div class="item-variants">
+
+                        <!-- Sizes -->
+                        <?php if (!empty($sizes)): ?>
+                            <div class="variant-group">
+                                <h4>Size</h4>
+                                <div class="size-options">
+                                    <?php foreach ($sizes as $s): ?>
+                                        <button class="size-btn" data-size="<?= $s ?>"><?= $s ?></button>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Colors -->
+                        <?php if (!empty($colors)): ?>
+                            <div class="variant-group">
+                                <h4>Color</h4>
+                                <div class="color-options">
+                                    <?php foreach ($colors as $c): ?>
+                                        <span class="color-dot"
+                                            data-color="<?= $c['color'] ?>"
+                                            style="background: <?= $c['color_code'] ?>"></span>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                    </div>
+                    <div id="variantMessage" class="variant-message">
+                        Please choose size and color
+                    </div>
+
                 <?php endif; ?>
-            </div>
-<div class="item-rating">
-    <div id="starRating" class="stars" data-user-rating="<?php echo $user_rating; ?>" data-avg-rating="<?php echo $avg_rating; ?>">
-        <?php for ($i = 1; $i <= 5; $i++): ?>
-            <i class="fa fa-star" data-value="<?php echo $i; ?>"></i>
-        <?php endfor; ?>
-        <span id="ratingInfo">(<?php echo $avg_rating; ?> / 5, <?php echo $total_votes; ?> votes)</span>
-    </div>
-</div>
 
-            <div class="item-description">
-                <h3>Details</h3>
-                <p><?php echo nl2br(htmlspecialchars($item['description'])); ?></p>
-            </div>
-            <div class="item-actions">
-                <button class="add-cart">Add to Cart</button>
+                <button class="add-cart"
+                    <?php echo ((int)$item['category_id'] === 2 ? 'disabled' : ''); ?>>
+                    Add to Cart
+                </button>
+
+
                 <button class="add-wishlist">♡ Wishlist</button>
             </div>
         </div>
 
     </div>
-</div>
+    </div>
 
 
-</div>
-</div>
+    </div>
+    </div>
 
 
 
@@ -296,98 +373,208 @@ if ($user_id) {
 
 
 <script>
-const thumbnails = document.querySelectorAll('.thumbnail');
-const mainImage = document.getElementById('mainItemImage');
-const container = mainImage.parentElement;
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.getElementById('mainItemImage');
+    const container = mainImage.parentElement;
 
-let zoomLevel = 2;
+    let zoomLevel = 2;
 
-// Change main image on thumbnail click
-thumbnails.forEach(thumb => {
-    thumb.addEventListener('click', () => {
-        mainImage.src = thumb.src;
+    // Change main image on thumbnail click
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+            mainImage.src = thumb.src;
 
-        // Highlight active thumbnail
-        thumbnails.forEach(t => t.classList.remove('active'));
-        thumb.classList.add('active');
+            // Highlight active thumbnail
+            thumbnails.forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
 
-        // Reset zoom when image changes
+            // Reset zoom when image changes
+            mainImage.style.transform = 'scale(1)';
+            mainImage.style.transformOrigin = 'center center';
+        });
+    });
+
+    // Zoom & Pan
+    container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+
+        mainImage.style.transformOrigin = `${x * 100}% ${y * 100}%`;
+        mainImage.style.transform = `scale(${zoomLevel})`;
+    });
+
+    container.addEventListener('mouseleave', () => {
         mainImage.style.transform = 'scale(1)';
         mainImage.style.transformOrigin = 'center center';
     });
-});
-
-// Zoom & Pan
-container.addEventListener('mousemove', (e) => {
-    const rect = container.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-
-    mainImage.style.transformOrigin = `${x * 100}% ${y * 100}%`;
-    mainImage.style.transform = `scale(${zoomLevel})`;
-});
-
-container.addEventListener('mouseleave', () => {
-    mainImage.style.transform = 'scale(1)';
-    mainImage.style.transformOrigin = 'center center';
-});
-
 </script>
 
 <script>
-  const stars = document.querySelectorAll('#starRating i');
-const ratingInfo = document.getElementById('ratingInfo');
-const starContainer = document.getElementById('starRating');
+    const stars = document.querySelectorAll('#starRating i');
+    const ratingInfo = document.getElementById('ratingInfo');
+    const starContainer = document.getElementById('starRating');
 
-function renderStars(rating) {
-    stars.forEach(star => {
-        const val = parseInt(star.dataset.value);
-        if (val <= Math.floor(rating)) {
-            star.classList.add('filled');
-            star.classList.remove('half');
-        } else if (val - 1 < rating && rating < val) {
-            star.classList.add('half');
-            star.classList.remove('filled');
-        } else {
-            star.classList.remove('filled', 'half');
-        }
-    });
-}
+    const avgRating = parseFloat(starContainer.dataset.avgRating);
+    const userRating = parseFloat(starContainer.dataset.userRating);
 
-// Initial render
-renderStars(parseFloat(starContainer.dataset.userRating) || parseFloat(starContainer.dataset.avgRating));
-
-// Allow rating
-stars.forEach(star => {
-    star.addEventListener('mouseenter', () => {
-        renderStars(parseInt(star.dataset.value));
-    });
-    star.addEventListener('mouseleave', () => {
-        renderStars(parseFloat(starContainer.dataset.userRating) || parseFloat(starContainer.dataset.avgRating));
-    });
-    star.addEventListener('click', () => {
-        const val = parseInt(star.dataset.value);
-
-        fetch('rate_item.php', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({item_id: <?php echo $item_id; ?>, rating: val})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success){
-                // Update dataset
-                starContainer.dataset.userRating = val;
-                starContainer.dataset.avgRating = data.avg_rating;
-
-                // Render stars and update text
-                renderStars(val);
-                ratingInfo.textContent = `(${data.avg_rating} / 5, ${data.total_votes} votes)`;
+    // Function to render stars (supports fractions)
+    function renderStars(rating) {
+        stars.forEach(star => {
+            const val = parseInt(star.dataset.value);
+            if (val <= Math.floor(rating)) {
+                star.classList.add('filled');
+                star.classList.remove('half');
+            } else if (val - 1 < rating && rating < val) {
+                star.classList.add('half');
+                star.classList.remove('filled');
             } else {
-                alert(data.message || 'Error saving rating');
+                star.classList.remove('filled', 'half');
             }
         });
-    });
-});
+    }
 
+    // Render on page load with avg rating
+    renderStars(userRating || avgRating);
+
+    // Optional: allow logged-in users to rate
+    stars.forEach(star => {
+        star.addEventListener('mouseenter', () => {
+            renderStars(parseInt(star.dataset.value));
+        });
+        star.addEventListener('mouseleave', () => {
+            renderStars(userRating || avgRating);
+        });
+        star.addEventListener('click', () => {
+            const val = parseInt(star.dataset.value);
+
+            if (parseInt(starContainer.dataset.userRating) === val) {
+                val = 0; // unset rating
+            }
+
+            fetch('rate_item.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        item_id: <?php echo $item_id; ?>,
+                        rating: val
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        renderStars(val);
+                        ratingInfo.textContent = `(${data.avg_rating} / 5, ${data.total_votes} votes)`;
+                    } else {
+                        alert('Error saving rating');
+                    }
+                });
+        });
+    });
+</script>
+
+<script>
+    let selectedSize = null;
+    let selectedColor = null;
+
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedSize = btn.dataset.size;
+        });
+    });
+
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            dot.classList.add('active');
+            selectedColor = dot.dataset.color;
+        });
+    });
+
+
+    document.querySelector('.add-cart').addEventListener('click', () => {
+        if ("<?= $item['category'] ?>" === "clothes") {
+            if (!selectedSize || !selectedColor) {
+                alert("Please select size and color");
+                return;
+            }
+        }
+
+        // continue add-to-cart logic here
+    });
+</script>
+
+
+
+
+
+
+
+
+<script>
+    let selectedSize = null;
+    let selectedColor = null;
+
+    const isClothes = <?= ((int)$item['category_id'] === 2 ? 'true' : 'false') ?>;
+    const addCartBtn = document.querySelector('.add-cart');
+    const msgBox = document.getElementById('variantMessage');
+
+    function updateCartState() {
+        if (isClothes) {
+            if (selectedSize && selectedColor) {
+                addCartBtn.disabled = false;
+                addCartBtn.classList.remove('disabled-btn');
+                msgBox.classList.remove('show');
+            } else {
+                addCartBtn.disabled = true;
+                addCartBtn.classList.add('disabled-btn');
+                msgBox.classList.add('show');
+            }
+        }
+    }
+
+    // Sizes (toggle)
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const size = btn.dataset.size;
+
+            if (selectedSize === size) {
+                // clicked same size => remove selection
+                selectedSize = null;
+                btn.classList.remove('active');
+            } else {
+                selectedSize = size;
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+
+            updateCartState();
+        });
+    });
+
+    // Colors (toggle)
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+            const color = dot.dataset.color;
+
+            if (selectedColor === color) {
+                // clicked same color => remove selection
+                selectedColor = null;
+                dot.classList.remove('active');
+            } else {
+                selectedColor = color;
+                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+                dot.classList.add('active');
+            }
+
+            updateCartState();
+        });
+    });
+
+    // Init
+    updateCartState();
 </script>
