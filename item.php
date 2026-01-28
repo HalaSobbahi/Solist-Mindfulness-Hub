@@ -62,6 +62,27 @@ if (empty($images)) {
 }
 
 $main_image = $images[0]; // default main image
+// Fetch average rating and total votes
+$stmt = $conn->prepare("SELECT AVG(rating) AS avg_rating, COUNT(*) AS total_votes FROM item_ratings WHERE item_id = ?");
+$stmt->bind_param("i", $item_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$rating_data = $result->fetch_assoc();
+
+$avg_rating = round($rating_data['avg_rating'], 1) ?? 0;
+$total_votes = $rating_data['total_votes'] ?? 0;
+
+// Optional: get logged-in user's rating if logged in
+$user_rating = 0;
+if ($user_id) {
+    $stmt2 = $conn->prepare("SELECT rating FROM item_ratings WHERE item_id = ? AND user_id = ?");
+    $stmt2->bind_param("ii", $item_id, $user_id);
+    $stmt2->execute();
+    $res2 = $stmt2->get_result();
+    if ($row = $res2->fetch_assoc()) $user_rating = $row['rating'];
+}
+
+
 ?>
 
 
@@ -165,7 +186,15 @@ $main_image = $images[0]; // default main image
                     <span class="out-stock">Out of Stock</span>
                 <?php endif; ?>
             </div>
-            <div class="item-rating">⭐ <?php echo $item['rating'] ?? '4.5'; ?>/5</div>
+<div class="item-rating">
+    <div id="starRating" class="stars" data-user-rating="<?php echo $user_rating; ?>" data-avg-rating="<?php echo $avg_rating; ?>">
+        <?php for ($i = 1; $i <= 5; $i++): ?>
+            <i class="fa fa-star" data-value="<?php echo $i; ?>"></i>
+        <?php endfor; ?>
+        <span id="ratingInfo">(<?php echo $avg_rating; ?> / 5, <?php echo $total_votes; ?> votes)</span>
+    </div>
+</div>
+
             <div class="item-description">
                 <h3>Details</h3>
                 <p><?php echo nl2br(htmlspecialchars($item['description'])); ?></p>
@@ -301,6 +330,64 @@ container.addEventListener('mousemove', (e) => {
 container.addEventListener('mouseleave', () => {
     mainImage.style.transform = 'scale(1)';
     mainImage.style.transformOrigin = 'center center';
+});
+
+</script>
+
+<script>
+  const stars = document.querySelectorAll('#starRating i');
+const ratingInfo = document.getElementById('ratingInfo');
+const starContainer = document.getElementById('starRating');
+
+function renderStars(rating) {
+    stars.forEach(star => {
+        const val = parseInt(star.dataset.value);
+        if (val <= Math.floor(rating)) {
+            star.classList.add('filled');
+            star.classList.remove('half');
+        } else if (val - 1 < rating && rating < val) {
+            star.classList.add('half');
+            star.classList.remove('filled');
+        } else {
+            star.classList.remove('filled', 'half');
+        }
+    });
+}
+
+// Initial render
+renderStars(parseFloat(starContainer.dataset.userRating) || parseFloat(starContainer.dataset.avgRating));
+
+// Allow rating
+stars.forEach(star => {
+    star.addEventListener('mouseenter', () => {
+        renderStars(parseInt(star.dataset.value));
+    });
+    star.addEventListener('mouseleave', () => {
+        renderStars(parseFloat(starContainer.dataset.userRating) || parseFloat(starContainer.dataset.avgRating));
+    });
+    star.addEventListener('click', () => {
+        const val = parseInt(star.dataset.value);
+
+        fetch('rate_item.php', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({item_id: <?php echo $item_id; ?>, rating: val})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                // Update dataset
+                starContainer.dataset.userRating = val;
+                starContainer.dataset.avgRating = data.avg_rating;
+
+                // Render stars and update text
+                renderStars(val);
+                ratingInfo.textContent = `(${data.avg_rating} / 5, ${data.total_votes} votes)`;
+            } else {
+                alert(data.message || 'Error saving rating');
+            }
+        });
+    });
 });
 
 </script>
