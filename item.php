@@ -271,6 +271,11 @@ if ($user_id) {
                     </div>
 
                 <?php endif; ?>
+<div class="quantity-selector">
+    <button type="button" class="qty-btn" id="decreaseQty">-</button>
+    <input type="text" id="itemQty" value="1" readonly>
+    <button type="button" class="qty-btn" id="increaseQty">+</button>
+</div>
 
                 <button class="add-cart"
                     <?php echo ((int)$item['category_id'] === 2 ? 'disabled' : ''); ?>>
@@ -577,4 +582,49 @@ if ($user_id) {
 
     // Init
     updateCartState();
+</script>
+
+<script>
+    const decreaseBtn = document.getElementById('decreaseQty');
+const increaseBtn = document.getElementById('increaseQty');
+const qtyInput = document.getElementById('itemQty');
+
+let qty = 1; // default
+
+decreaseBtn.addEventListener('click', () => {
+    if (qty > 1) {
+        qty--;
+        qtyInput.value = qty;
+    }
+});
+
+increaseBtn.addEventListener('click', () => {
+    qty++;
+    qtyInput.value = qty;
+});
+
+</script>
+
+<script>
+    addCartBtn.addEventListener('click', () => {
+    if (isClothes) {
+        if (!selectedSize || !selectedColor) {
+            alert("Please select size and color");
+            return;
+        }
+    }
+
+    const selectedQty = parseInt(qtyInput.value);
+
+    // Now send item_id, quantity, size, color to your add-to-cart logic
+    console.log("Add to cart:", {
+        item_id: <?= $item_id ?>,
+        quantity: selectedQty,
+        size: selectedSize,
+        color: selectedColor
+    });
+
+    // Example: fetch('add_to_cart.php', { ... })
+});
+
 </script>

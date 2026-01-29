@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password']);
 
     if ($email_or_username && $password) {
-        $stmt = $conn->prepare("SELECT id, full_name, email, password FROM users WHERE email=? OR full_name=? LIMIT 1");
+$stmt = $conn->prepare("SELECT id, full_name, email, password, role FROM users WHERE email=? OR full_name=? LIMIT 1");
         $stmt->bind_param("ss", $email_or_username, $email_or_username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -22,10 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
             if (password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['full_name'];
-                header("Location: user.php");
-                exit;
+              $_SESSION['user_id']   = $user['id'];
+$_SESSION['user_name'] = $user['full_name'];
+$_SESSION['role']      = $user['role'];
+
+if ($user['role'] === 'admin') {
+    header("Location: Admin/admin.php");   // admin dashboard
+} else {
+    header("Location: user.php");          // normal user
+}
+exit;
+
             } else {
                 $error = "Invalid email/username or password.";
             }
