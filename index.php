@@ -7,8 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solist Mindfulness Hub</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/footer.css">
     <link rel="icon" href="img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -16,7 +16,7 @@
 
 <body>
 
-
+    <!-- Header Section -->
     <header id="Home">
         <img src="img/logo.png" alt="" class="logo">
 
@@ -29,7 +29,7 @@
 
     </header>
 
-
+    <!-- Hero Section -->
     <div class="hero">
         <img src="img/icon.png" a class="solist-icon">
         <h1>You have now entered the world of <span style="color:#8fabbe; font-weight: bold;">sun lovers</span></h1>
@@ -49,6 +49,9 @@
 
         </div>
     </div>
+
+    <!-- Owner Section -->
+
     <h2 class="owner-title" id="Owner">Welcome to my world...</h2>
 
     <div class="owner">
@@ -87,6 +90,7 @@
         <img src="img/Lana.webp" alt="">
     </div>
 
+    <!-- Categories Section -->
 
     <h1 class="title" id="Categories">Categories</h1>
 
@@ -108,6 +112,7 @@
         </div>
     </div>
 
+    <!-- BookClub Section -->
 
     <h1 class="title" id="SolistBookClub">Solist Bookclub </h1>
     <div class="bookclub">
@@ -137,6 +142,8 @@
 
         </div>
     </div>
+
+    <!-- Footer Section -->
 
     <footer id="Contact">
 
@@ -199,26 +206,11 @@
 
 </html>
 
-<script>
-    const scrollBtn = document.getElementById("scrollTopBtn");
-
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 300) {
-            scrollBtn.style.display = "flex";
-        } else {
-            scrollBtn.style.display = "none";
-        }
-    });
-
-    scrollBtn.addEventListener("click", () => {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    });
-</script>
+<!-- Scroll to Top Script -->
+<script src="js/scrollTop.js"></script>
 
 <script>
+    // Redirect user to the signup page when the "Join" button is clicked
     const joinButton = document.getElementById("joinBtn");
 
     joinButton.addEventListener("click", function() {
