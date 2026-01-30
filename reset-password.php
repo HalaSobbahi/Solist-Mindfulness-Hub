@@ -53,24 +53,28 @@ if (isset($_GET['token'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Reset Password</title>
-<link rel="stylesheet" href="css/Login.css">
+    <meta charset="UTF-8">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="css/Login.css">
 </head>
+
 <body>
-<div class="login-container">
-    <h2>Reset Password</h2>
+    <!-- Reset Password Form -->
+    <div class="login-container">
+        <h2 style="color: #9FB9CC;">Reset Password</h2>
 
-    <?php if(strpos($message, "successfully") === false): ?>
-        <form method="POST" action="">
-            <input type="password" name="password" placeholder="New Password" required>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-            <button type="submit">Reset Password</button>
-        </form>
-    <?php endif; ?>
+        <?php if (strpos($message, "successfully") === false): ?>
+            <form method="POST" action="">
+                <input type="password" name="password" placeholder="New Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <button type="submit">Reset Password</button>
+            </form>
+        <?php endif; ?>
 
-    <p style="color:#eee; margin-top:10px;"><?php echo $message; ?></p>
-</div>
+        <p style="color:#eee; margin-top:10px;"><?php echo $message; ?></p>
+    </div>
 </body>
+
 </html>

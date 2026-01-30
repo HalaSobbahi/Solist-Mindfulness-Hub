@@ -9,9 +9,13 @@ if (isset($_SESSION['user_id'])) {
 }
 
 $error = "";
+// Handle form submission
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email_or_username = trim($_POST['email_or_username']);
     $password = trim($_POST['password']);
+
+    // Fetch user by email OR username
 
     if ($email_or_username && $password) {
         $stmt = $conn->prepare("SELECT id, full_name, email, password, role FROM users WHERE email=? OR full_name=? LIMIT 1");
@@ -19,9 +23,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute();
         $result = $stmt->get_result();
 
+        // If user exists
+
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
             if (password_verify($password, $user['password'])) {
+                // Store user session data
+
                 $_SESSION['user_id']   = $user['id'];
                 $_SESSION['user_name'] = $user['full_name'];
                 $_SESSION['role']      = $user['role'];
@@ -72,6 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </a>
     </div>
 
+    <!-- Login box -->
+
     <div class="login-container">
         <h2 style="color: #9FB9CC;">Login</h2>
 
@@ -90,6 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p style="margin-top: 10px; font-size: 14px;">
             <a href="forgot-password.php" class="forgot-password">Forgot Password?</a>
         </p>
+
+        <!-- Signup redirect -->
 
         <p style="margin-top: 5px; font-size: 14px;">
             Don't have an account? <a href="Signup.php">Sign Up</a>

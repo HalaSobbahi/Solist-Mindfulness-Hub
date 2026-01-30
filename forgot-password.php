@@ -49,8 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="css/Login.css">
 </head>
 <body>
+    <!-- Forgot Password Form -->
 <div class="login-container">
-    <h2>Forgot Password</h2>
+    <h2 style="color: #9FB9CC;">Forgot Password</h2>
     <form method="POST" action="">
         <input type="email" name="email" placeholder="Enter your email" required>
         <button type="submit">Send Reset Link</button>

@@ -24,6 +24,7 @@
         </div>
 
     </div>
+    <!-- Signup form container -->
 
     <div class="login-container">
         <h2 style="color: #9FB9CC;">Sign Up</h2>
@@ -34,8 +35,10 @@
             <input type="password" name="confirm" placeholder="Confirm Password" required>
             <button type="submit">Register</button>
         </form>
+        <!-- Message area for success/error feedback -->
 
         <p id="msg"></p>
+        <!-- Redirect to login -->
 
         <p style="margin-top: 10px; font-size: 14px;">
             Already have an account? <a href="login.php">Login</a>
@@ -45,5 +48,7 @@
 </body>
 
 </html>
+
+<!-- Signup JS logic -->
 
 <script src="js/signup.js"></script>
