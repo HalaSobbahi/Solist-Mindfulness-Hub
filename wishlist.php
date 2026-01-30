@@ -11,12 +11,6 @@ if ($conn->connect_error) die("DB Error");
 
 $user_id = $_SESSION['user_id'];
 
-// Prevent browser caching
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header("Expires: Sat, 26 Jan 1990 00:00:00 GMT");
-
 
 $result = $conn->query("
     SELECT items.*, categories.slug AS category_slug

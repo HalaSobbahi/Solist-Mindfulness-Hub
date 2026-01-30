@@ -81,6 +81,7 @@ if (isset($_POST['change_password'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - Solist Mindfulness Hub</title>
     <link rel="stylesheet" href="css/user.css">
+    <link rel="stylesheet" href="css/cart.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -235,13 +236,39 @@ if (isset($_POST['change_password'])) {
 </style>
 
 <body>
+        <div class="cart-overlay" id="cartOverlay"></div>
+
+    <div class="cart-panel" id="cartPanel">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="cart-close" id="closeCart">✕</button>
+        </div>
+
+        <div class="cart-items" id="cartItems"></div>
+
+        <div class="cart-footer">
+            <div class="cart-total">
+                Total: $<span id="cartTotal">0</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
 
 
     <header>
-        <div class="menu-box" id="menuBtn">
-            <i class="fa fa-bars menu-icon"></i>
+        <div class="left-icons">
+            <div class="menu-box" id="menuBtn">
+                <i class="fa fa-bars menu-icon"></i>
+            </div>
+
+            <div class="menu-box" id="cartBtn">
+                <i class="fa-solid fa-bag-shopping menu-icon"></i>
+            </div>
+
         </div>
+
         <img src="img/logo.png" alt="" class="logo">
+
         <div class="logout-box">
             <a href="logout.php">
                 <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
@@ -254,7 +281,6 @@ if (isset($_POST['change_password'])) {
             <img src="img/logo.png" alt="Logo">
         </div>
         <a href="user.php"><i class="fa fa-home" style="margin-right: 15px;"></i>Home</a>
-        <a href="cart.php"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
         <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
         <a href="wishlist.php"><i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist</a>
         <a href=""><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
@@ -380,7 +406,8 @@ if (isset($_POST['change_password'])) {
             });
         });
     </script>
-
+   <script src="js/global-cart.js"></script>
+    <script src="js/product-cart.js"></script>
 </body>
 
 </html>

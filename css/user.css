@@ -28,9 +28,14 @@
    width: 150px;
  }
 
-
+ 
+.left-icons{
+    display:flex;
+    align-items:center;
+    gap:10px; /* space between menu and cart */
+}
  .logout-box,
- .menu-box {
+ .menu-box, .cart-box {
    display: inline-flex;
    align-items: center;
    justify-content: center;
@@ -44,6 +49,7 @@
    cursor: pointer;
    transition: transform 0.2s ease, background 0.2s ease;
  }
+
 
  .logout-box:hover,
  .menu-box:hover {

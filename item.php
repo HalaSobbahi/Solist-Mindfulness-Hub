@@ -2,39 +2,33 @@
 session_start();
 require_once 'session_check.php';
 
-// Database connection
 $conn = new mysqli("localhost", "root", "", "solist");
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
-// Get logged-in user ID
 $user_id = $_SESSION['user_id'] ?? null;
 if (!$user_id) {
     header("Location: login.php");
     exit;
 }
 
-// Get cart items
 $cart_map = [];
 $cart_result = $conn->query("SELECT item_id, quantity FROM cart WHERE user_id = $user_id");
 while ($row = $cart_result->fetch_assoc()) {
     $cart_map[$row['item_id']] = $row['quantity'];
 }
 
-// Get wishlist items
 $wishlist_ids = [];
 $wishlist_result = $conn->query("SELECT item_id FROM wishlist WHERE user_id = $user_id");
 while ($row = $wishlist_result->fetch_assoc()) {
     $wishlist_ids[] = $row['item_id'];
 }
 
-// Get item ID from URL
 $item_id = $_GET['id'] ?? null;
 if (!$item_id) {
     header("Location: user.php");
     exit;
 }
 
-// Fetch item
 $stmt = $conn->prepare("SELECT * FROM items WHERE id = ?");
 $stmt->bind_param("i", $item_id);
 $stmt->execute();
@@ -46,7 +40,6 @@ if (!$item) {
     exit;
 }
 
-// Fetch all images for this item from item_images table
 $images = [];
 $img_stmt = $conn->prepare("SELECT image FROM item_images WHERE item_id = ?");
 $img_stmt->bind_param("i", $item_id);
@@ -56,12 +49,11 @@ while ($row = $img_result->fetch_assoc()) {
     $images[] = $row['image'];
 }
 
-// Fallback if no images
 if (empty($images)) {
-    $images = [$item['image']]; // single image fallback
+    $images = [$item['image']]; 
 }
 
-$main_image = $images[0]; // default main image
+$main_image = $images[0]; 
 
 $CLOTHES_ID = 2; // clothes category id
 

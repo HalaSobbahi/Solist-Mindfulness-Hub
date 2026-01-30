@@ -1,12 +1,11 @@
 
 <?php
 
-// Database Connection
 session_start();
 
 require_once 'session_check.php';
 
-
+// Database Connection
 $conn = new mysqli("localhost", "root", "", "solist");
 if ($conn->connect_error)
     die("Connection failed: " . $conn->connect_error);
@@ -18,9 +17,6 @@ if (!$user_id) {
     header("Location: login.php");
     exit;
 }
-
-
-
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -102,19 +98,39 @@ $item_result = $conn->query("
     }
 </style>
 
+
+
 <body>
+
+
+
+
     <!-- Header -->
-    <header>
+
+
+<header>
+    <div class="left-icons">
         <div class="menu-box" id="menuBtn">
             <i class="fa fa-bars menu-icon"></i>
         </div>
-        <img src="img/logo.png" alt="" class="logo">
-        <div class="logout-box">
-            <a href="logout.php">
-                <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
-            </a>
-        </div>
-    </header>
+
+        <div class="menu-box" id="cartBtn">
+    <i class="fa-solid fa-bag-shopping menu-icon"></i>
+</div>
+<?php include 'cart_template.php'; ?>
+    <script src="js/global-cart.js"></script>
+<script src="js/product-cart.js"></script>
+    </div>
+
+    <img src="img/logo.png" alt="" class="logo">
+
+    <div class="logout-box">
+        <a href="logout.php">
+            <i class="fa-solid fa-arrow-right-from-bracket logout-icon"></i>
+        </a>
+    </div>
+</header>
+
 
     <!-- SideMenu -->
     <div class="side-menu" id="sideMenu">
@@ -122,28 +138,17 @@ $item_result = $conn->query("
             <img src="img/logo.png" alt="Logo">
         </div>
         <a href="user.php"><i class="fa fa-home" style="margin-right: 15px;"></i>Home</a>
-        <a href="cart.php"><i class="fa fa-shopping-cart" style="margin-right: 15px;"></i>Cart</a>
-        <div class="cart-panel" id="cartPanel"></div>
+     
         <a href="#"><i class="fa fa-list" style="margin-right: 15px;"></i>Orders</a>
         <a href="wishlist.php">
             <i class="fa fa-heart" style="margin-right: 15px;"></i>Wishlist</a>
         <a href="#"><i class="fa fa-credit-card" style="margin-right: 15px;"></i>Payment methods</a>
         <a href="profile.php"><i class="fa fa-user" style="margin-right: 15px;"></i>Profile</a>
 
-        <!-- Cart Header -->
-        <div class="cart-header">
-            <h3 style="color: 363535;">Your Cart</h3>
-        </div>
 
         <div class="cart-items" id="cartItems"></div>
 
-        <!-- Cart Footer -->
-        <div class="cart-footer">
-            <div class="cart-total">
-                Total: $<span id="cartTotal">0</span>
-            </div>
-            <button class="checkout-btn">Checkout</button>
-        </div>
+    
 
     </div>
 
@@ -275,10 +280,11 @@ $item_result = $conn->query("
     <script src="js/category.js"></script>
     <script src="js/search.js"></script>
     <script src="js/wishlist.js"></script>
-    <script src="js/cart.js"></script>
-    <script src="js/cart-panel.js"></script>
     <script src="js/sort.js"></script>
+
+
 
 </body>
 
 </html>
+

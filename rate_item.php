@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/db.php'; // DB connection
+require_once 'config/db.php'; 
 
 $user_id = $_SESSION['user_id'] ?? 0;
 if (!$user_id) { 
@@ -25,4 +25,4 @@ $avg_rating = round($avg_data['avg_rating'], 1);
 $total_votes = $avg_data['total_votes'];
 
 echo json_encode(['success'=>true,'avg_rating'=>$avg_rating,'total_votes'=>$total_votes]);
-?>
+
